@@ -18,13 +18,21 @@ require candidate review. Junior scope remains; O1/O2 and SCALE are skipped.
 Fresh typecheck, 136 server tests, 6 client tests and production build passed.
 Read-only DB verification at 20:18 Cairo: 50,005 orders, 149,631 items, 1–5 per
 order, zero invalid totals/dates, integrity ok. No database reset or seed occurred.
-Final browser runner completion is recorded in the concluding verification note.
+Final browser verification: the first run asserted all ten scenarios but hung
+at shutdown and was terminated (exit 1). A direct retry passed all ten in
+43.9 seconds and exited 0. `docs/evidence/final-verification.md` distinguishes
+the interrupted text log from the latest successful JSON/screenshots.
 Historical counts, missing-PDF statements, no-commit state and old process IDs
 below are historical only, not the current state.
 
-Git: one inspected commit 8cde75b, configured origin, later local changes.
+Git final inspection: two commits, 8cde75b and a2e1cd6, configured origin,
+and later local documentation/evidence changes. The second commit appeared
+during this session; Codex did not create it.
 No commit/push/email by Codex. Next: candidate reviews personal statements,
 commits reviewed changes, verifies remote access and submits per SUBMISSION.md.
+Live frontend and API HTTP readiness both returned 200. Documentation links,
+three seven-line decision blocks and `git diff --check` passed. Fresh-machine
+setup timing and reviewer remote access remain unverified.
 
 ## Historical integration log
 

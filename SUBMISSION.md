@@ -63,11 +63,18 @@ Running the duplicate script again adds two synthetic proof orders.
 
 ## Repository and final checks
 
+Latest verification passed: typecheck, 142 server/client tests, build, read-only
+database verification, and a direct ten-scenario Chrome run with clean exit 0.
+See `docs/evidence/final-verification.md` for the earlier shutdown hang and
+remaining verification limits. These results do not remove the personal-review
+or final remote-access steps below.
+
 Observed configured repository:
 `https://github.com/ibrahim-hussien-dev/SARH-Orders-Console`
 
-The inspected history has commit `8cde75b`; subsequent source/docs changes
-remain local until reviewed, committed and pushed. A configured remote and
+Final inspection found two commits, `8cde75b` and `a2e1cd6` (sign-up);
+remaining documentation/evidence changes are local until reviewed, committed
+and pushed. Codex did not create either commit. A configured remote and
 local tracking refs do not prove the remote includes those changes or reviewer
 access. Preserve history; do not manufacture historical commits.
 

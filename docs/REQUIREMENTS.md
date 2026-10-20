@@ -21,7 +21,7 @@ rendered and visually inspected. The source was not modified.
 | SCALE.md for seniors | Omitted for Junior scope |
 | Local setup under five minutes, no paid/hosted service | Observed install about one minute, seed 3.445 seconds; local-only runtime; machine/network variability remains |
 | .env.example, no real secrets committed | Random local secret, empty example, git-ignore checks |
-| Git link and history | One inspected commit `8cde75b`, configured origin and subsequent local changes. Preserve history; final commit/push and reviewer access remain candidate tasks |
+| Git link and history | Two inspected commits `8cde75b` and `a2e1cd6`, configured origin and later local documentation/evidence changes. Preserve history; final commit/push and reviewer access remain candidate tasks |
 | Two-minute recording or three screenshots for R1/R2 | Genuine screenshots + execution evidence saved; candidate chooses/submits evidence |
 | ~5-hour effort, stop if past six hours | Candidate reports under two hours of personal active work; total effort across all phases not independently measured |
 | Deadline Thu 22 Oct 2026 EOD | Verified page 5; email m.alharbi@sarh.ai; timezone not specified; no submission performed |

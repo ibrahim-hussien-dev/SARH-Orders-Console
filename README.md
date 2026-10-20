@@ -239,7 +239,7 @@ It answers the written question; no bulk-delete or archive feature was implement
   senior-only and excluded for this Junior submission.
 - No Docker or deployment: neither is needed for the local assessment.
   No email/submission or remote push was performed by Codex.
-  Git currently has one inspected commit, `8cde75b`, plus subsequent local
+  Git currently has two inspected commits, `8cde75b` and `a2e1cd6`, plus subsequent local
   changes. Preserve that history and commit reviewed changes honestly;
   historical incremental development cannot be reconstructed.
 - Keys never expire; deleting an order cascades to its key and allows later
@@ -267,6 +267,12 @@ It answers the written question; no bulk-delete or archive feature was implement
 See [docs/evidence/README.md](docs/evidence/README.md) for actual execution logs,
 screenshots and what they prove. A still image does not establish race safety;
 controlled request-order assertions and the saved execution report do.
+Latest checks on 20 October: typecheck, 136 server + 6 client tests, production
+build and read-only database verification passed. The final direct Chrome run
+passed all 10 scenarios in 43.9 seconds and exited 0; an immediately preceding
+attempt hung at shutdown despite passing assertions. See
+[final-verification.md](docs/evidence/final-verification.md) for that distinction.
+Fresh-machine `npm ci` and full under-five-minute setup timing remain unverified.
 
 Before submission, the candidate must confirm the product answer, actual work
 hours, AI disclosure and the three decisions; review the runnable
