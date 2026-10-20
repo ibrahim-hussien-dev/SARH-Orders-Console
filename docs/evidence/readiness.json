@@ -1,0 +1,26 @@
+{
+  "checkedAt": "2026-10-20T11:10:10.6111001Z",
+  "apiHealth": "ok",
+  "frontendStatus": 200,
+  "processes": [
+    {
+      "LocalAddress": "::1",
+      "LocalPort": 5173,
+      "OwningProcess": 32024
+    },
+    {
+      "LocalAddress": "127.0.0.1",
+      "LocalPort": 4000,
+      "OwningProcess": 5556
+    }
+  ],
+  "devToolSession": 96702,
+  "previewVerification": {
+    "temporaryPreviewStopped": true,
+    "login": 200,
+    "bundledJavaScript": 200,
+    "logout": 204,
+    "rows": 5,
+    "html": 200
+  }
+}

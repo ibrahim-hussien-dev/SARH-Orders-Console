@@ -1,0 +1,22 @@
+
+> sarh-orders-console@1.0.0 test:e2e
+> playwright test
+
+[WebServer] (node:32844) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+
+Running 9 tests using 1 worker
+
+(node:17900) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ok 1 e2e\orders.spec.ts:93:5 › login, bounded pagination, name/email search, all sorts and logout (3.5s)
+  ok 2 e2e\orders.spec.ts:119:5 › real delayed responses: rapid filters, search debounce and load-more cannot overwrite latest (2.2s)
+  ok 3 e2e\orders.spec.ts:180:5 › client validation, server total and synchronous double-submit guard (1.5s)
+  ok 4 e2e\orders.spec.ts:205:5 › committed order with lost response survives reload and retries the exact key as replay (1.6s)
+  ok 5 e2e\orders.spec.ts:238:5 › pending create survives session expiry for the same user; 422 never auto-resubmits (1.9s)
+  ok 6 e2e\orders.spec.ts:266:5 › admin delete is enforced by API and confirmed in UI on an isolated database (2.6s)
+  ok 7 e2e\orders.spec.ts:286:5 › a stale server error cannot replace the latest successful rows or loading state (1.3s)
+  ok 8 e2e\orders.spec.ts:310:5 › a real ten-second timeout preserves the key and returns the committed order on retry (11.4s)
+  ok 9 e2e\orders.spec.ts:338:5 › explicit logout and switching users discard pending attempts (3.2s)
+
+  9 passed (39.4s)

@@ -1,0 +1,25 @@
+node_modules/
+dist/
+coverage/
+test-results/
+playwright-report/
+.runtime/
+*.log
+*.tsbuildinfo
+
+# Local secrets
+.env
+
+# SQLite database and sidecar files
+server/data/
+*.db
+*.db-wal
+*.db-shm
+*.db-journal
+
+# Local AI hand-off notes (not part of the submission)
+handoffs/
+
+# OS files
+.DS_Store
+Thumbs.db

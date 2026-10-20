@@ -1,0 +1,96 @@
+
+> sarh-orders-console@1.0.0 verify:db
+> tsx server/src/scripts/verify-database.ts
+
+{
+  "checkedAt": "2026-10-20T11:07:21.454Z",
+  "orders": 50004,
+  "items": 149630,
+  "minItems": 1,
+  "maxItems": 5,
+  "invalidTotals": 0,
+  "nonIntegerTotals": 0,
+  "statuses": [
+    {
+      "status": "cancelled",
+      "count": 4899
+    },
+    {
+      "status": "delivered",
+      "count": 15205
+    },
+    {
+      "status": "paid",
+      "count": 12452
+    },
+    {
+      "status": "pending",
+      "count": 7453
+    },
+    {
+      "status": "shipped",
+      "count": 9995
+    }
+  ],
+  "invalidDates": 0,
+  "integrity": "ok",
+  "users": [
+    {
+      "email": "admin@sarh.test",
+      "role": "admin"
+    },
+    {
+      "email": "agent@sarh.test",
+      "role": "agent"
+    }
+  ],
+  "plans": [
+    {
+      "sort": "created_at",
+      "plan": [
+        {
+          "id": 7,
+          "parent": 0,
+          "notused": 62,
+          "detail": "SEARCH o USING INDEX idx_orders_status_created (status=?)"
+        },
+        {
+          "id": 21,
+          "parent": 0,
+          "notused": 0,
+          "detail": "CORRELATED SCALAR SUBQUERY 1"
+        },
+        {
+          "id": 26,
+          "parent": 21,
+          "notused": 53,
+          "detail": "SEARCH i USING COVERING INDEX idx_items_order (order_id=?)"
+        }
+      ]
+    },
+    {
+      "sort": "total_cents",
+      "plan": [
+        {
+          "id": 7,
+          "parent": 0,
+          "notused": 62,
+          "detail": "SEARCH o USING INDEX idx_orders_status_total (status=?)"
+        },
+        {
+          "id": 21,
+          "parent": 0,
+          "notused": 0,
+          "detail": "CORRELATED SCALAR SUBQUERY 1"
+        },
+        {
+          "id": 26,
+          "parent": 21,
+          "notused": 53,
+          "detail": "SEARCH i USING COVERING INDEX idx_items_order (order_id=?)"
+        }
+      ]
+    }
+  ]
+}
+PASS: file-backed database, totals, item counts, dates, roles and password hashes

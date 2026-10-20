@@ -1,0 +1,22 @@
+
+> sarh-orders-console@1.0.0 build
+> npm run build --workspace server && npm run build --workspace client
+
+
+> @sarh/server@1.0.0 build
+> tsc --project tsconfig.build.json && node ../scripts/copy-schema.cjs
+
+Copied schema.sql to server\dist\db\schema.sql
+
+> @sarh/client@1.0.0 build
+> tsc --noEmit && vite build
+
+vite v6.4.4 building for production...
+transforming...
+✓ 48 modules transformed.
+rendering chunks...
+computing gzip size...
+dist/index.html                   0.42 kB │ gzip:  0.28 kB
+dist/assets/index-DEOOL0SV.css    2.65 kB │ gzip:  1.06 kB
+dist/assets/index-BVmbuLg5.js   170.06 kB │ gzip: 54.59 kB
+✓ built in 1.30s

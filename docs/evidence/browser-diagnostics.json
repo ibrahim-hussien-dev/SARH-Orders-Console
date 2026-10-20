@@ -1,0 +1,102 @@
+{
+  "errors": [],
+  "networkFailures": [
+    {
+      "url": "http://localhost:5174/api/auth/me",
+      "error": "net::ERR_ABORTED"
+    },
+    {
+      "url": "http://localhost:5174/api/orders?sort=total_cents&dir=desc&limit=50",
+      "error": "net::ERR_ABORTED"
+    },
+    {
+      "url": "http://localhost:5174/api/auth/me",
+      "error": "net::ERR_ABORTED"
+    },
+    {
+      "url": "http://localhost:5174/api/orders?sort=created_at&dir=desc&limit=50&status=pending&_delayMs=760",
+      "error": "net::ERR_ABORTED"
+    },
+    {
+      "url": "http://localhost:5174/api/orders?sort=created_at&dir=desc&limit=50&status=paid&_delayMs=2411",
+      "error": "net::ERR_ABORTED"
+    },
+    {
+      "url": "http://localhost:5174/api/orders?sort=total_cents&dir=desc&limit=50&status=paid&_delayMs=336",
+      "error": "net::ERR_ABORTED"
+    },
+    {
+      "url": "http://localhost:5174/api/orders?sort=total_cents&dir=asc&limit=50&status=paid&cursor=eyJ2IjoxNTUwLCJpZCI6MTE1MDB9&_delayMs=1959",
+      "error": "net::ERR_ABORTED"
+    },
+    {
+      "url": "http://localhost:5174/api/auth/me",
+      "error": "net::ERR_ABORTED"
+    },
+    {
+      "url": "http://localhost:5174/api/auth/me",
+      "error": "net::ERR_ABORTED"
+    },
+    {
+      "url": "http://localhost:5174/api/orders",
+      "error": "net::ERR_FAILED"
+    },
+    {
+      "url": "http://localhost:5174/api/auth/me",
+      "error": "net::ERR_ABORTED"
+    },
+    {
+      "url": "http://localhost:5174/api/auth/me",
+      "error": "net::ERR_ABORTED"
+    },
+    {
+      "url": "http://localhost:5174/api/auth/me",
+      "error": "net::ERR_ABORTED"
+    },
+    {
+      "url": "http://localhost:5174/api/auth/me",
+      "error": "net::ERR_ABORTED"
+    },
+    {
+      "url": "http://localhost:5174/api/auth/me",
+      "error": "net::ERR_ABORTED"
+    },
+    {
+      "url": "http://localhost:5174/api/orders?sort=created_at&dir=desc&limit=50&status=cancelled",
+      "error": "net::ERR_ABORTED"
+    },
+    {
+      "url": "http://localhost:5174/api/auth/me",
+      "error": "net::ERR_ABORTED"
+    },
+    {
+      "url": "http://localhost:5174/api/orders",
+      "error": "net::ERR_ABORTED"
+    },
+    {
+      "url": "http://localhost:5174/api/auth/me",
+      "error": "net::ERR_ABORTED"
+    },
+    {
+      "url": "http://localhost:5174/api/orders",
+      "error": "net::ERR_FAILED"
+    },
+    {
+      "url": "http://localhost:5174/api/auth/me",
+      "error": "net::ERR_ABORTED"
+    },
+    {
+      "url": "http://localhost:5174/api/orders",
+      "error": "net::ERR_FAILED"
+    },
+    {
+      "url": "http://localhost:5174/api/auth/me",
+      "error": "net::ERR_ABORTED"
+    },
+    {
+      "url": "http://localhost:5174/api/auth/me",
+      "error": "net::ERR_ABORTED"
+    }
+  ],
+  "note": "Aborts during races and injected failures are intentional."
+}

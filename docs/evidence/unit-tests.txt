@@ -1,0 +1,30 @@
+
+> sarh-orders-console@1.0.0 test
+> npm run test --workspace server && npm run test --workspace client
+
+
+> @sarh/server@1.0.0 test
+> vitest run
+
+
+ RUN  v4.1.12 D:/projects/SARH interview Task/orders-console/server
+
+
+ Test Files  4 passed (4)
+      Tests  129 passed (129)
+   Start at  14:06:57
+   Duration  3.78s (transform 1.26s, setup 0ms, import 5.48s, tests 4.54s, environment 1ms)
+
+
+> @sarh/client@1.0.0 test
+> vitest run
+
+
+ RUN  v4.1.12 D:/projects/SARH interview Task/orders-console/client
+
+
+ Test Files  2 passed (2)
+      Tests  6 passed (6)
+   Start at  14:07:03
+   Duration  2.71s (transform 190ms, setup 0ms, import 884ms, tests 74ms, environment 2.88s)
+

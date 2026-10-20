@@ -1,0 +1,16 @@
+{
+  "responseOrder": [
+    "latest paid",
+    "latest paid",
+    "latest paid",
+    "old pending released"
+  ],
+  "finalFilters": {
+    "q": "Olivia",
+    "status": "shipped",
+    "sort": "total_cents",
+    "dir": "asc"
+  },
+  "verified": "Displayed IDs equal live API IDs after releasing older first-page and load-more responses.",
+  "debounce": "300ms boundary, stale errors and loading states additionally covered with deterministic hook tests."
+}

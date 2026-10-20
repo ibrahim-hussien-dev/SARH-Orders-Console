@@ -1,0 +1,29 @@
+{
+  "name": "sarh-orders-console",
+  "version": "1.0.0",
+  "private": true,
+  "description": "SARH Orders Console take-home",
+  "engines": {
+    "node": ">=24.14.0 <25"
+  },
+  "workspaces": [
+    "server",
+    "client"
+  ],
+  "scripts": {
+    "setup": "node scripts/setup.cjs",
+    "seed": "npm run seed --workspace server --",
+    "dev": "concurrently --kill-others --names server,client --prefix-colors blue,green \"npm run dev --workspace server\" \"npm run dev --workspace client\"",
+    "test": "npm run test --workspace server && npm run test --workspace client",
+    "typecheck": "npm run typecheck --workspace server && npm run typecheck --workspace client && tsc --project tsconfig.tools.json",
+    "build": "npm run build --workspace server && npm run build --workspace client",
+    "start": "npm run start --workspace server",
+    "prove:duplicates": "npm run prove:duplicates --workspace server",
+    "test:e2e": "playwright test",
+    "verify:db": "tsx server/src/scripts/verify-database.ts"
+  },
+  "devDependencies": {
+    "concurrently": "9.1.0",
+    "@playwright/test": "^1.56.0"
+  }
+}
