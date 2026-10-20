@@ -3,9 +3,9 @@
 > tsx server/src/scripts/verify-database.ts
 
 {
-  "checkedAt": "2026-10-20T11:07:21.454Z",
-  "orders": 50004,
-  "items": 149630,
+  "checkedAt": "2026-10-20T17:18:55.995Z",
+  "orders": 50005,
+  "items": 149631,
   "minItems": 1,
   "maxItems": 5,
   "invalidTotals": 0,
@@ -25,7 +25,7 @@
     },
     {
       "status": "pending",
-      "count": 7453
+      "count": 7454
     },
     {
       "status": "shipped",

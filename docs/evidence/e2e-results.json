@@ -110,6 +110,40 @@
       "line": 0,
       "specs": [
         {
+          "title": "signup validates confirmation, creates an agent session and rejects duplicate email",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 45000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "",
+              "projectName": "",
+              "results": [
+                {
+                  "workerIndex": 0,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 2671,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-10-20T17:14:11.274Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "de3f15501f825e0a6f88-fc8e11bcc09642f1b8da",
+          "file": "orders.spec.ts",
+          "line": 93,
+          "column": 5
+        },
+        {
           "title": "login, bounded pagination, name/email search, all sorts and logout",
           "ok": true,
           "tags": [],
@@ -125,12 +159,12 @@
                   "workerIndex": 0,
                   "parallelIndex": 0,
                   "status": "passed",
-                  "duration": 3475,
+                  "duration": 3298,
                   "errors": [],
                   "stdout": [],
                   "stderr": [],
                   "retry": 0,
-                  "startTime": "2026-10-20T11:08:35.641Z",
+                  "startTime": "2026-10-20T17:14:19.604Z",
                   "annotations": [],
                   "attachments": []
                 }
@@ -140,7 +174,7 @@
           ],
           "id": "de3f15501f825e0a6f88-24b2957570f9b895a2d2",
           "file": "orders.spec.ts",
-          "line": 93,
+          "line": 121,
           "column": 5
         },
         {
@@ -159,12 +193,12 @@
                   "workerIndex": 0,
                   "parallelIndex": 0,
                   "status": "passed",
-                  "duration": 2231,
+                  "duration": 2482,
                   "errors": [],
                   "stdout": [],
                   "stderr": [],
                   "retry": 0,
-                  "startTime": "2026-10-20T11:08:44.781Z",
+                  "startTime": "2026-10-20T17:14:22.951Z",
                   "annotations": [],
                   "attachments": []
                 }
@@ -174,7 +208,7 @@
           ],
           "id": "de3f15501f825e0a6f88-0236f8b71c1f943c8b3f",
           "file": "orders.spec.ts",
-          "line": 119,
+          "line": 147,
           "column": 5
         },
         {
@@ -193,12 +227,12 @@
                   "workerIndex": 0,
                   "parallelIndex": 0,
                   "status": "passed",
-                  "duration": 1522,
+                  "duration": 1674,
                   "errors": [],
                   "stdout": [],
                   "stderr": [],
                   "retry": 0,
-                  "startTime": "2026-10-20T11:08:47.053Z",
+                  "startTime": "2026-10-20T17:14:25.479Z",
                   "annotations": [],
                   "attachments": []
                 }
@@ -208,7 +242,7 @@
           ],
           "id": "de3f15501f825e0a6f88-b260125bdb13c577fc93",
           "file": "orders.spec.ts",
-          "line": 180,
+          "line": 208,
           "column": 5
         },
         {
@@ -227,12 +261,12 @@
                   "workerIndex": 0,
                   "parallelIndex": 0,
                   "status": "passed",
-                  "duration": 1611,
+                  "duration": 2570,
                   "errors": [],
                   "stdout": [],
                   "stderr": [],
                   "retry": 0,
-                  "startTime": "2026-10-20T11:08:48.601Z",
+                  "startTime": "2026-10-20T17:14:27.176Z",
                   "annotations": [],
                   "attachments": []
                 }
@@ -242,7 +276,7 @@
           ],
           "id": "de3f15501f825e0a6f88-b4c48a5753fb5d93cf5e",
           "file": "orders.spec.ts",
-          "line": 205,
+          "line": 233,
           "column": 5
         },
         {
@@ -261,12 +295,12 @@
                   "workerIndex": 0,
                   "parallelIndex": 0,
                   "status": "passed",
-                  "duration": 1910,
+                  "duration": 1949,
                   "errors": [],
                   "stdout": [],
                   "stderr": [],
                   "retry": 0,
-                  "startTime": "2026-10-20T11:08:50.243Z",
+                  "startTime": "2026-10-20T17:14:29.770Z",
                   "annotations": [],
                   "attachments": []
                 }
@@ -276,7 +310,7 @@
           ],
           "id": "de3f15501f825e0a6f88-31ec95991cebd2c16e02",
           "file": "orders.spec.ts",
-          "line": 238,
+          "line": 266,
           "column": 5
         },
         {
@@ -295,12 +329,12 @@
                   "workerIndex": 0,
                   "parallelIndex": 0,
                   "status": "passed",
-                  "duration": 2608,
+                  "duration": 2765,
                   "errors": [],
                   "stdout": [],
                   "stderr": [],
                   "retry": 0,
-                  "startTime": "2026-10-20T11:08:52.181Z",
+                  "startTime": "2026-10-20T17:14:31.742Z",
                   "annotations": [],
                   "attachments": []
                 }
@@ -310,7 +344,7 @@
           ],
           "id": "de3f15501f825e0a6f88-9641e5c95da40b643eaa",
           "file": "orders.spec.ts",
-          "line": 266,
+          "line": 294,
           "column": 5
         },
         {
@@ -329,12 +363,12 @@
                   "workerIndex": 0,
                   "parallelIndex": 0,
                   "status": "passed",
-                  "duration": 1301,
+                  "duration": 1441,
                   "errors": [],
                   "stdout": [],
                   "stderr": [],
                   "retry": 0,
-                  "startTime": "2026-10-20T11:08:54.810Z",
+                  "startTime": "2026-10-20T17:14:34.530Z",
                   "annotations": [],
                   "attachments": []
                 }
@@ -344,7 +378,7 @@
           ],
           "id": "de3f15501f825e0a6f88-37f8bf0457e2fbe9fb66",
           "file": "orders.spec.ts",
-          "line": 286,
+          "line": 314,
           "column": 5
         },
         {
@@ -363,12 +397,12 @@
                   "workerIndex": 0,
                   "parallelIndex": 0,
                   "status": "passed",
-                  "duration": 11401,
+                  "duration": 11608,
                   "errors": [],
                   "stdout": [],
                   "stderr": [],
                   "retry": 0,
-                  "startTime": "2026-10-20T11:08:56.132Z",
+                  "startTime": "2026-10-20T17:14:35.995Z",
                   "annotations": [],
                   "attachments": []
                 }
@@ -378,7 +412,7 @@
           ],
           "id": "de3f15501f825e0a6f88-a4dcee58dab89797e1ca",
           "file": "orders.spec.ts",
-          "line": 310,
+          "line": 338,
           "column": 5
         },
         {
@@ -397,12 +431,12 @@
                   "workerIndex": 0,
                   "parallelIndex": 0,
                   "status": "passed",
-                  "duration": 3239,
+                  "duration": 3637,
                   "errors": [],
                   "stdout": [],
                   "stderr": [],
                   "retry": 0,
-                  "startTime": "2026-10-20T11:09:07.558Z",
+                  "startTime": "2026-10-20T17:14:47.633Z",
                   "annotations": [],
                   "attachments": []
                 }
@@ -412,7 +446,7 @@
           ],
           "id": "de3f15501f825e0a6f88-348d33663a39790391f1",
           "file": "orders.spec.ts",
-          "line": 338,
+          "line": 366,
           "column": 5
         }
       ]
@@ -420,9 +454,9 @@
   ],
   "errors": [],
   "stats": {
-    "startTime": "2026-10-20T11:08:32.351Z",
-    "duration": 39408.905,
-    "expected": 9,
+    "startTime": "2026-10-20T17:14:07.942Z",
+    "duration": 44235.511,
+    "expected": 10,
     "skipped": 0,
     "unexpected": 0,
     "flaky": 0

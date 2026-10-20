@@ -40,6 +40,25 @@ Local development credentials (synthetic assessment data only):
 | Admin | `admin@sarh.test` | `Admin#12345` |
 | Agent | `agent@sarh.test` | `Agent#12345` |
 
+## Sign up
+
+Choose **Create an account** on the sign-in screen. Enter an email, a password
+of at least 8 characters (maximum 72 UTF-8 bytes), and matching confirmation.
+Successful registration signs you in immediately with **Agent** permissions.
+Public registration cannot create admins; role injection is rejected.
+
+`POST /api/auth/signup` accepts `{email,password}`, normalizes email and stores
+a bcrypt cost-10 hash. It returns 201 `{user}` and the same HttpOnly,
+SameSite=Strict, 15-minute session cookie used by login. Invalid input returns
+400; an existing email returns 409 `EMAIL_IN_USE`, including simultaneous
+registrations. A database unique constraint enforces that guarantee.
+Registration allows ten attempts per IP per 15 minutes, including successes
+(disabled in test mode). There is no email verification, invitation requirement
+or password reset. This user-requested addition enables public Agent access to
+the console, and duplicate-email feedback reveals whether an account exists.
+After an uncertain registration response, sign in with the submitted credentials;
+registration itself does not use order idempotency keys.
+
 ## Checks and production build
 
 ```powershell
@@ -170,7 +189,8 @@ Additional boundaries: no token in localStorage or sessionStorage; only the
 pending draft/key use sessionStorage and therefore hold customer data until
 cleared or the tab closes. Login errors do not reveal whether the email exists.
 The dummy compare reduces timing differences without claiming constant time.
-API responses use `Cache-Control: no-store`. React renders values as text.
+API responses reaching the API middleware use `Cache-Control: no-store`;
+JSON parser errors occur before that middleware. React renders values as text.
 No CORS middleware, raw HTML rendering, remote analytics or third-party assets.
 
 ## Decisions, assumptions and provenance
@@ -196,6 +216,8 @@ tradeoffs, not an invented account of the candidate's personal reasoning.
 create/idempotency, authentication/security and React code. Codex extracted and
 reviewed those deliveries, completed integration, updated dependencies, repaired
 request races, added tests, ran local verification and wrote these documents.
+At the candidate's later request, Codex also implemented and tested public
+Agent sign-up; this addition is not an original assessment requirement.
 No claim is made that the candidate personally wrote, reviewed or understood
 each part. **Candidate confirmation required:** verify this disclosure against
 the tools actually used, review all code and explain the implementation in
@@ -215,9 +237,11 @@ It answers the written question; no bulk-delete or archive feature was implement
 - O1 (slow stats) and O2 (optimistic create) were intentionally skipped to focus
   on mandatory R1/R2; the brief explicitly permits skipping both. SCALE.md is
   senior-only and excluded for this Junior submission.
-- No Docker, deployment, email/submission, remote push or invented commit history.
-  Git started with no commits. The candidate must create honest commits from
-  reviewed changes; historical incremental development cannot be reconstructed.
+- No Docker or deployment: neither is needed for the local assessment.
+  No email/submission or remote push was performed by Codex.
+  Git currently has one inspected commit, `8cde75b`, plus subsequent local
+  changes. Preserve that history and commit reviewed changes honestly;
+  historical incremental development cannot be reconstructed.
 - Keys never expire; deleting an order cascades to its key and allows later
   recreation with that key. Different keys/users or deliberate new submissions
   can create equivalent orders. Editing after an ambiguous failure can create a
@@ -233,9 +257,10 @@ It answers the written question; no bulk-delete or archive feature was implement
   the local proxy makes browser clients share the same IP.
 - Setup, seeds and tests are local-only. Edge assertions passed but its browser
   profile cleanup hung; the supported automated run uses Chrome instead.
-- Prior candidate active work time is unknown. The original PDF specifies
-  about five hours with a stop if past six hours; this session does not certify cumulative
-  compliance. Candidate must reconcile their actual hours and the original brief.
+- The candidate reports under two hours of personal active work as of
+  20 October 2026. Combined effort across earlier deliveries and integration
+  was not independently measured. The brief specifies about five hours and
+  stopping if past six; this is not a certification of cumulative compliance.
 
 ## Evidence and submission work
 
@@ -249,4 +274,11 @@ code; make honest Git commits; and record the requested walkthrough or select
 the required screenshots. The original brief requires a two-minute recording
 or three screenshots covering R1 (including rapid filters) and the R2 proof.
 Submit the Git link as Junior to `m.alharbi@sarh.ai` by Thursday 22 October 2026,
-end of day; the brief does not specify a timezone. Nothing was emailed or pushed.
+end of day; the brief does not specify a timezone. Codex has not emailed or pushed.
+
+The complete file-by-file checklist and a ready-to-review submission email are
+in [SUBMISSION.md](SUBMISSION.md). Use the actual required filenames
+`README.md` and `DECISIONS.md` (not `Read.md` or `Decision.md`).
+The three selected screenshots are `01-agent-list.png`, `02-latest-filter.png`
+and `04-duplicate-proof.png` under `docs/evidence/`; include their execution
+logs and `race-execution.json` so the rapid-filter claim is supported.

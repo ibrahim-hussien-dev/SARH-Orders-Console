@@ -1,6 +1,7 @@
 # Original brief reconciliation
 
-Source: `C:\Users\Precision 5550\Downloads\SARH_FullStack_Take-Home_Test_v2.pdf`,
+Source: `OUTPUTS/SARH_FullStack_Take-Home_Test_v2.pdf` in the parent workspace,
+also supplied at `C:\Users\Precision 5550\Downloads\SARH_FullStack_Take-Home_Test_v2.pdf`,
 five pages, read on 20 October 2026. Text extracted with pypdf; pages 2–3 also
 rendered and visually inspected. The source was not modified.
 
@@ -20,9 +21,9 @@ rendered and visually inspected. The source was not modified.
 | SCALE.md for seniors | Omitted for Junior scope |
 | Local setup under five minutes, no paid/hosted service | Observed install about one minute, seed 3.445 seconds; local-only runtime; machine/network variability remains |
 | .env.example, no real secrets committed | Random local secret, empty example, git-ignore checks |
-| Git link and history | Existing repository had no commits. No fabricated history, push or publication; candidate submission task remains |
+| Git link and history | One inspected commit `8cde75b`, configured origin and subsequent local changes. Preserve history; final commit/push and reviewer access remain candidate tasks |
 | Two-minute recording or three screenshots for R1/R2 | Genuine screenshots + execution evidence saved; candidate chooses/submits evidence |
-| ~5-hour effort, stop if past six hours | Session start recorded; prior candidate active hours unknown and requested, no cumulative-hours claim |
+| ~5-hour effort, stop if past six hours | Candidate reports under two hours of personal active work; total effort across all phases not independently measured |
 | Deadline Thu 22 Oct 2026 EOD | Verified page 5; email m.alharbi@sarh.ai; timezone not specified; no submission performed |
 
 ## Engineering choices, not employer mandates
@@ -33,6 +34,8 @@ The employer allows other real databases/frameworks and server-side pagination.
 Retaining those compatible delivered choices avoided an unnecessary rewrite.
 The old Node 20 pin was changed to the installed Node 24 with compatible SQLite
 and security-patched tooling. No employer requirement pins Node 20.
+Public Agent sign-up was explicitly requested later by the candidate and is
+not an employer requirement. It has dedicated API/browser tests.
 
 The security review deliberately qualifies plaintext-storage and ORM injection
 claims: the PDF does not reveal the data layer's implementation. Signed role

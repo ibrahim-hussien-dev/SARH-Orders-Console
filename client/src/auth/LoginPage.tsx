@@ -23,7 +23,9 @@ function describeLoginFailure(error: unknown): string {
 }
 
 export function LoginPage() {
-  const { login, notice } = useAuth();
+  const { login, signup, notice } = useAuth();
+  const [registering, setRegistering] = useState(false);
+  const [confirmation, setConfirmation] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [submitting, setSubmitting] = useState(false);
@@ -37,13 +39,21 @@ export function LoginPage() {
     if (submittingRef.current) {
       return;
     }
+    if (registering && (password.length < 8 || new TextEncoder().encode(password).length > 72 || password !== confirmation)) {
+      setError(password !== confirmation ? 'Passwords do not match.' : 'Use at least 8 characters and at most 72 UTF-8 bytes for your password.');
+      return;
+    }
     submittingRef.current = true;
     setSubmitting(true);
     setError(null);
     try {
-      await login(email, password);
+      await (registering ? signup(email, password) : login(email, password));
     } catch (failure) {
-      setError(describeLoginFailure(failure));
+      setError(registering && failure instanceof ApiError && failure.status === 409
+        ? 'This email already has an account. Sign in instead.'
+        : registering && !(failure instanceof ApiError || failure instanceof NetworkError)
+          ? 'Sign-up failed. Please try again.'
+          : describeLoginFailure(failure));
       submittingRef.current = false;
       setSubmitting(false);
     }
@@ -53,7 +63,8 @@ export function LoginPage() {
     <main className="login">
       <h1>SARH Orders Console</h1>
       <form className="card" onSubmit={handleSubmit} aria-busy={submitting}>
-        <h2>Sign in</h2>
+        <h2>{registering ? 'Create account' : 'Sign in'}</h2>
+        {registering && <p>Your new account will have Agent access.</p>}
         {notice !== null && (
           <p className="notice" role="status">
             {notice}
@@ -81,15 +92,33 @@ export function LoginPage() {
           <input
             id={passwordId}
             type="password"
-            autoComplete="current-password"
+            autoComplete={registering ? 'new-password' : 'current-password'}
             required
-            maxLength={LIMITS.passwordMax}
+            minLength={registering ? 8 : undefined}
+            maxLength={registering ? 72 : LIMITS.passwordMax}
             value={password}
             onChange={(event) => setPassword(event.target.value)}
           />
         </div>
+        {registering && (
+          <div className="field">
+            <label htmlFor={`${passwordId}-confirm`}>Confirm password</label>
+            <input id={`${passwordId}-confirm`} type="password" autoComplete="new-password"
+              required maxLength={72} value={confirmation}
+              onChange={(event) => setConfirmation(event.target.value)} />
+            <p>Use 8–72 characters (at most 72 UTF-8 bytes).</p>
+          </div>
+        )}
         <button type="submit" className="primary" disabled={submitting}>
-          {submitting ? 'Signing in…' : 'Sign in'}
+          {submitting ? (registering ? 'Creating account…' : 'Signing in…') : (registering ? 'Create account' : 'Sign in')}
+        </button>
+        <button type="button" disabled={submitting} onClick={() => {
+          setRegistering(!registering);
+          setError(null);
+          setPassword('');
+          setConfirmation('');
+        }}>
+          {registering ? 'Already have an account? Sign in' : 'Create an account'}
         </button>
       </form>
     </main>

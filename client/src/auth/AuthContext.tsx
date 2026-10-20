@@ -1,6 +1,6 @@
 import { createContext, useCallback, useContext, useEffect, useMemo, useState } from 'react';
 import type { ReactNode } from 'react';
-import { fetchCurrentUser, login as loginRequest, logout as logoutRequest } from '../api/auth';
+import { fetchCurrentUser, login as loginRequest, signup as signupRequest, logout as logoutRequest } from '../api/auth';
 import { ApiError, isAbortError, onUnauthorized } from '../api/http';
 import { clearPendingAttempt, discardAttemptsOfOtherUsers } from '../orders/pendingAttempt';
 import type { User } from '../types';
@@ -12,6 +12,7 @@ interface AuthContextValue {
   user: User | null;
   notice: string | null;
   login: (email: string, password: string) => Promise<void>;
+  signup: (email: string, password: string) => Promise<void>;
   logout: () => Promise<void>;
 }
 
@@ -79,9 +80,17 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     setNotice(null);
   }, []);
 
+  const signup = useCallback(async (email: string, password: string) => {
+    const registered = await signupRequest(email, password);
+    discardAttemptsOfOtherUsers(registered.id);
+    setUser(registered);
+    setStatus('authenticated');
+    setNotice(null);
+  }, []);
+
   const value = useMemo(
-    () => ({ status, user, notice, login, logout }),
-    [status, user, notice, login, logout],
+    () => ({ status, user, notice, login, signup, logout }),
+    [status, user, notice, login, signup, logout],
   );
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;

@@ -9,6 +9,7 @@ export interface UserRecord {
 }
 
 export interface AuthRepository {
+  createAgent(email: string, passwordHash: string): PublicUser | undefined;
   findByEmail(email: string): UserRecord | undefined;
   findPublicById(id: number): PublicUser | undefined;
 }
@@ -27,6 +28,12 @@ export function createAuthRepository(db: Database): AuthRepository {
   const selectPublicById = db.prepare('SELECT id, email, role FROM users WHERE id = ?');
 
   return {
+    createAgent(email, passwordHash) {
+      const result = db.prepare(
+        "INSERT INTO users (email, password_hash, role) VALUES (?, ?, 'agent') ON CONFLICT(email) DO NOTHING",
+      ).run(email, passwordHash);
+      return result.changes === 0 ? undefined : { id: Number(result.lastInsertRowid), email, role: 'agent' };
+    },
     findByEmail(email) {
       const row = selectByEmail.get(email) as UserRow | undefined;
       if (!row) {

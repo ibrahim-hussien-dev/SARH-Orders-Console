@@ -1,5 +1,18 @@
 # Security Review: Orders Console Authentication
 
+## Sign-up addition (20 October 2026)
+
+User-requested public registration creates Agent accounts only. The server
+rejects extra fields such as role, validates normalized email, requires at least
+8 password characters and at most 72 UTF-8 bytes, hashes with bcrypt cost 10,
+and enforces email uniqueness in SQLite. Ten registration attempts per IP per
+15 minutes include successful requests. Sessions use the existing cookie/JWT
+policy. No email verification or invitation flow is implemented; public users
+can obtain Agent access. A 409 duplicate-email response permits account
+enumeration. These are explicit local-assessment limitations.
+References below to no password policy describe the original login-only scope;
+new registration now enforces the stated length/byte policy.
+
 ## Scope and method
 
 This review originated in `OUTPUTS/imp3.txt`. During integration, Codex read all

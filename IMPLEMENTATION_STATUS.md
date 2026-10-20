@@ -1,5 +1,33 @@
 # Implementation status
 
+## Current state — final PDF reconciliation, 20 October 2026
+
+This section supersedes the historical milestones below.
+All five pages of the original PDF were read again from
+`OUTPUTS/SARH_FullStack_Take-Home_Test_v2.pdf`. README now has one sign-up
+section, corrected Git/cache wording, required security findings, a three-sentence
+token answer, a three-line product answer, setup/seed/test commands, and skipped
+scope/limits. DECISIONS contains exactly three seven-line decisions with
+alternatives, reasoning, limits and accurate AI disclosure. SUBMISSION.md maps
+every requirement to files and explains screenshot selection and email delivery.
+
+Candidate reports less than two hours of personal active work; combined effort
+is not independently measured. Personal understanding/actual alternatives still
+require candidate review. Junior scope remains; O1/O2 and SCALE are skipped.
+
+Fresh typecheck, 136 server tests, 6 client tests and production build passed.
+Read-only DB verification at 20:18 Cairo: 50,005 orders, 149,631 items, 1–5 per
+order, zero invalid totals/dates, integrity ok. No database reset or seed occurred.
+Final browser runner completion is recorded in the concluding verification note.
+Historical counts, missing-PDF statements, no-commit state and old process IDs
+below are historical only, not the current state.
+
+Git: one inspected commit 8cde75b, configured origin, later local changes.
+No commit/push/email by Codex. Next: candidate reviews personal statements,
+commits reviewed changes, verifies remote access and submits per SUBMISSION.md.
+
+## Historical integration log
+
 Integration started 2026-10-20 approximately 10:27 UTC (13:27 Africa/Cairo).
 The delivery review reports a roughly five-hour assessment with a six-hour stop.
 Prior candidate work duration is unknown; clarification is pending. File timestamps
@@ -82,3 +110,31 @@ are not evidence of active work duration.
 Resolve test-runner shutdown, add missing retry/storage checks as needed, save
 final command evidence, README/DECISIONS/security findings and submission limits.
 Candidate prior active hours and original PDF remain unavailable.
+# Sign-up follow-up — 20 October 2026
+
+User authorized a new sign-up feature after the read-only readiness report.
+Added public `/api/auth/signup`, Agent-only insertion, normalized unique email,
+bcrypt cost-10 hashing, strict input validation (8 characters minimum,
+72 UTF-8 bytes maximum), ten-attempt registration limiter, session cookie,
+UI mode switch/confirmation, and immediate authenticated entry.
+No schema reset or existing data changes were required.
+
+Added integrated tests for session/permissions/hash, parallel email conflict,
+invalid inputs/role injection and rate limiting, plus a real-browser registration
+scenario. Typecheck passed; all 136 server tests passed. Initial client test/build
+attempts hit Windows sandbox EPERM writing generated files; retry is in progress
+with the existing user permissions. Final results are recorded below when done.
+The report under OUTPUTS/SARHFullStack remains a historical pre-sign-up audit.
+
+Final verification: `npm run typecheck` passed; server Vitest 136/136 and
+client Vitest 6/6 passed; `npm run build` passed; `npm run test:e2e`
+passed all 10 Chrome scenarios in 44.2 seconds with clean exit 0.
+Generated browser evidence reflects this new run; older text logs remain
+historical. Sandbox EPERM was resolved by running generated-file checks with
+user permissions. An attempted additional `npm run dev` exited because 5173
+was already occupied; the existing frontend and API both returned HTTP 200,
+and a non-inserting empty-body signup probe returned 400 VALIDATION_ERROR,
+confirming the live signup route is loaded. Existing servers were preserved.
+No signup test account was inserted into the development database; browser
+and server tests used isolated databases. Next action: use Create an account
+at http://localhost:5173. No commit, push or submission performed.
