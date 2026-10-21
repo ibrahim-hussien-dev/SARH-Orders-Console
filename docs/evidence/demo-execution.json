@@ -1,0 +1,23 @@
+{
+  "checkedAt": "2026-10-21T17:14:21.222Z",
+  "automated": true,
+  "race": [
+    "old pending response held",
+    "latest shipped rows verified",
+    "old pending released"
+  ],
+  "latestIdsVerified": true,
+  "parallelCreate": {
+    "statuses": [
+      200,
+      201
+    ],
+    "ids": [
+      50008,
+      50008
+    ],
+    "matchingRows": 1,
+    "total": 3998
+  },
+  "durationMs": 120012
+}

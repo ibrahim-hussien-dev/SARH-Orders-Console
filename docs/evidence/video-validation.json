@@ -1,0 +1,26 @@
+{
+  "checkedAt": "2026-10-21T17:16:40.452Z",
+  "frames": [
+    {
+      "time": 10,
+      "duration": 120,
+      "width": 1440,
+      "height": 1000,
+      "readyState": 4
+    },
+    {
+      "time": 65,
+      "duration": 120,
+      "width": 1440,
+      "height": 1000,
+      "readyState": 4
+    },
+    {
+      "time": 105,
+      "duration": 120,
+      "width": 1440,
+      "height": 1000,
+      "readyState": 4
+    }
+  ]
+}

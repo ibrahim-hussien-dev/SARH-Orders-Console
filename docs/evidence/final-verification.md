@@ -1,32 +1,43 @@
-# Final assessment verification — 20 October 2026
+# Final verification — 21 October 2026
 
-This is a factual execution summary written from tool results, not a raw shell
-transcript. Project source includes the requested Agent sign-up addition.
+The submitted source has no public sign-up. These are executed checks, not
+results inherited from an earlier version. Logs include actual EXIT_CODE lines.
 
-| Check | Result |
+| Command / check | Observed result |
 |---|---|
-| `npm run typecheck` | PASS |
-| `npm test` | PASS: 136 server + 6 client tests |
-| `npm run build` | PASS: API/schema and production Vite build |
-| `npm run verify:db` | PASS at 20:18 Cairo: 50,005 orders, 149,631 items, 1–5 per order; zero invalid totals/dates, SQLite integrity ok |
-| First final `npm run test:e2e` | Ten scenarios asserted successfully, but shutdown hung. Inspected test-runner tree stopped; command exit 1. NOT a clean pass |
-| Direct retry `npm run test:e2e` | PASS: ten Chrome scenarios in 43.9 seconds; tool session 49391 completed with exit 0 |
-| Frontend `/` and API `/api/health` | HTTP 200 on ports 5173 and 4000 |
-| Documentation checks | Three decisions, seven lines each; one sign-up section; README/DECISIONS/SUBMISSION/REQUIREMENTS relative links resolve |
-| `git diff --check` | PASS |
+| npm run typecheck | PASS, exit 0 |
+| npm test | PASS, 130 server + 6 client tests, exit 0 |
+| npm run build | PASS, API/schema and Vite production bundle, exit 0 |
+| npm run test:e2e | PASS, nine Chrome scenarios in 39.1 seconds, exit 0; matching console/JSON |
+| npm run prove:duplicates | PASS, real login/cookie, two parallel requests + twenty retries; one ID, changed body 422; exit 0 |
+| npm run verify:db | PASS, final development data checked read-only; see timestamp/counts in the log |
+| Isolated install/setup/seed | PASS, npm ci + setup + 50k seed in 54.99 seconds |
+| Isolated runtime readiness | PASS, another 3.394 seconds; UI/API 200, proxy login 200, five authenticated rows |
+| Live recording | Race and parallel-create assertions passed; 120-second WebM decoded/seeks checked in Chrome |
+| Public sign-up regression | POST /api/auth/signup returns 404 and adds no user |
 
-`e2e-console.txt` is the raw log of the first, interrupted final attempt.
-`e2e-results.json`, screenshots, browser diagnostics and race JSON come from the
-successful direct retry. Its raw console result was observed in the tool session;
-it was not redirected over the interrupted transcript. Preserve this distinction.
+## Scope
 
-The earlier authenticated live duplicate proof remains in `duplicate-proof.txt`
-and screenshot 04. It was not rerun in this documentation pass, avoiding two
-additional synthetic development orders. Fresh server/browser tests cover
-parallel creation, replay, conflict and timeout/lost-response recovery.
+Node 24.14.0, npm 11.9.0, Windows and installed Google Chrome. The clean setup
+used a real local Git clone with reviewed uncommitted source changes overlaid,
+new dependencies and new database, using this machine's existing dependency cache.
+Combined install/seed/start command time was 58.39 seconds, excluding human pauses
+and Node installation. It is not a test on a fresh operating system. Alternate
+ports 4101/5176 preserved the user's running development services.
 
-No existing development data was reset or reseeded. Existing development
-servers were preserved. No commit, push, email or assessment submission was made.
-Fresh-machine `npm ci`/under-five-minute setup and current remote reviewer access
-remain unverified. Candidate-reported personal effort is under two hours; total
-effort across all phases was not independently measured.
+The final browser log and JSON describe the same completed run. Earlier attempts
+occasionally hung during Windows browser shutdown and were not counted as passes.
+The recording's assertions completed and its video finalized, but its process
+also hung at browser cleanup; only that process was stopped. The preserved video
+was trimmed at the end to 120 seconds, then decoded/seeks checked independently.
+No content was fabricated. The video is automated with captions, not narrated
+by the applicant, and the live proof image is not a terminal screenshot.
+
+The duplicate CLI proof adds two synthetic orders; the recording adds one.
+Existing data was not reset or reseeded. Browser tests use isolated temporary DBs.
+Screenshots alone do not prove races; execution assertions and observed IDs do.
+The one-process proof is not a distributed concurrency or production load benchmark.
+
+The separate dependency audit JSON is a dated historical artifact, not a new
+security audit. The clean installation itself reported zero known vulnerabilities
+at install time. No production deployment or email submission is implied.

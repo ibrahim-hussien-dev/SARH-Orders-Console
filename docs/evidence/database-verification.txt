@@ -1,11 +1,12 @@
+Started: 2026-10-21T20:16:01.8340857+03:00
 
 > sarh-orders-console@1.0.0 verify:db
 > tsx server/src/scripts/verify-database.ts
 
 {
-  "checkedAt": "2026-10-20T17:18:55.995Z",
-  "orders": 50005,
-  "items": 149631,
+  "checkedAt": "2026-10-21T17:16:04.428Z",
+  "orders": 50008,
+  "items": 149636,
   "minItems": 1,
   "maxItems": 5,
   "invalidTotals": 0,
@@ -25,7 +26,7 @@
     },
     {
       "status": "pending",
-      "count": 7454
+      "count": 7457
     },
     {
       "status": "shipped",
@@ -94,3 +95,4 @@
   ]
 }
 PASS: file-backed database, totals, item counts, dates, roles and password hashes
+EXIT_CODE=0

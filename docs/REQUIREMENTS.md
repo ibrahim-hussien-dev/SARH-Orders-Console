@@ -1,43 +1,30 @@
-# Original brief reconciliation
+# Assessment requirements map
 
-Source: `OUTPUTS/SARH_FullStack_Take-Home_Test_v2.pdf` in the parent workspace,
-also supplied at `C:\Users\Precision 5550\Downloads\SARH_FullStack_Take-Home_Test_v2.pdf`,
-five pages, read on 20 October 2026. Text extracted with pypdf; pages 2–3 also
-rendered and visually inspected. The source was not modified.
+The original SARH Full Stack Take-Home Test v2 was reviewed in full. Junior scope.
 
-| Employer requirement | Implemented / evidence |
+| Requirement | Location / evidence |
 |---|---|
-| React 18+, Node, real local DB | React 18.3.1, Node 24.14.0 / Express, file-backed SQLite |
-| At least 50,000 orders, 1–5 items | Seed 50,000 / 149,622; read-only verify script checks every total and item count |
-| Name/email search, status filter, date/amount sort | Parameterized list API and UI; 40 list tests and browser checks |
-| Bounded pagination, no whole table in browser, indexes mentioned | 50-row keyset pages (max 100), README index table, actual EXPLAIN output |
-| Rapid filter changes must not show earlier slower results | Abort + generation gate, immediate invalidation, hook tests, controlled browser response reordering |
-| Create form with client/server validation | Shared limits by contract; browser validation and 44 create tests |
-| Server duplicate guarantee and twice-in-parallel proof | IMMEDIATE transaction + unique user/key, live 2 + 20 HTTP proof, browser lost-response and timeout retries |
-| Review/fix auth snippet; admin + agent seeds | 42 auth tests, integrated cookie test, security findings and 3-sentence token answer in README |
-| Three decisions, each 5–8 lines, one covering R2, AI disclosure | DECISIONS.md; explicitly requires candidate confirmation of their own understanding |
-| Product answer <=5 lines | Candidate-supplied three-line draft in README; personal review flagged |
-| Optional O1 or O2 at most one | Both skipped explicitly; no penalty according to brief |
-| SCALE.md for seniors | Omitted for Junior scope |
-| Local setup under five minutes, no paid/hosted service | Observed install about one minute, seed 3.445 seconds; local-only runtime; machine/network variability remains |
-| .env.example, no real secrets committed | Random local secret, empty example, git-ignore checks |
-| Git link and history | Two inspected commits `8cde75b` and `a2e1cd6`, configured origin and later local documentation/evidence changes. Preserve history; final commit/push and reviewer access remain candidate tasks |
-| Two-minute recording or three screenshots for R1/R2 | Genuine screenshots + execution evidence saved; candidate chooses/submits evidence |
-| ~5-hour effort, stop if past six hours | Candidate reports under two hours of personal active work; total effort across all phases not independently measured |
-| Deadline Thu 22 Oct 2026 EOD | Verified page 5; email m.alharbi@sarh.ai; timezone not specified; no submission performed |
+| React 18+, Node, real SQLite | Manifests, server/src/db/connection.ts; build/database logs |
+| 50k orders, 1–5 items, totals/status/dates | seed.ts; fresh isolated seed and verify-database.ts |
+| R1 search/filter/date/amount sort | client/src/orders, server/src/orders/list; list/e2e tests |
+| Bounded pages and indexes | list.repository.ts, list.service.ts, schema.sql; README index table |
+| Rapid-filter correctness | useOrders.ts, useLatestRequest.ts; reordered responses/debounce/Load-more tests |
+| R2 client/server validation | validation.ts, create.schema.ts; boundary/browser tests |
+| Server duplicate prevention | create.service.ts + unique user/key; live 2+20 proof, rollback/lock tests |
+| Mandatory auth review/fixes | README security table; SECURITY_REVIEW.md; auth tests |
+| Admin/agent seeds and admin deletion | seed.ts, README credentials, delete.routes.ts; direct API checks |
+| Token answer, 2–3 sentences | README: three sentences covering protection and limits |
+| Three decisions, 5–8 lines each | DECISIONS.md: seven lines each, R2/alternatives/reasons included |
+| AI disclosure | DECISIONS.md: Claude and Codex, actual assistance and reported effort |
+| Product answer, <=5 lines | README: three-line answer; no bulk deletion built |
+| Skipped scope | README: O1/O2 omitted; SCALE not applicable to Junior |
+| Local setup/no hosted service | README; clean-setup.json with measured scope |
+| Environment example/no real secrets | .env.example, .gitignore; deliverable inspection |
+| Git link/history | Existing repository; preserve history and verify final remote revision |
+| Recording OR three screenshots | SUBMISSION.md evidence index |
+| Time budget | Self-reported personal active time under two hours; combined agent runtime not measured |
+| Delivery | Junior, m.alharbi@sarh.ai, Thu 22 Oct 2026 EOD; timezone unspecified |
 
-## Engineering choices, not employer mandates
-
-The contract supplies SQLite, Express 4, npm workspaces, the exact API schema,
-USD, UUID keys, cookie/JWT details, keyset pagination, and 300 ms debounce.
-The employer allows other real databases/frameworks and server-side pagination.
-Retaining those compatible delivered choices avoided an unnecessary rewrite.
-The old Node 20 pin was changed to the installed Node 24 with compatible SQLite
-and security-patched tooling. No employer requirement pins Node 20.
-Public Agent sign-up was explicitly requested later by the candidate and is
-not an employer requirement. It has dedicated API/browser tests.
-
-The security review deliberately qualifies plaintext-storage and ORM injection
-claims: the PDF does not reveal the data layer's implementation. Signed role
-claims are not inherently unsafe; unverified payloads are. Cached role changes,
-SameSite-only CSRF protection and no revocation are disclosed implementation limits.
+SQLite, Express, keyset pages, UUID keys, USD and 300 ms debounce are implementation
+choices. Public registration was removed because anonymous access is inappropriate
+for an internal customer-data console. The learning guide is supplementary.

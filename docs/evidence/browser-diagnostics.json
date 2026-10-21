@@ -6,14 +6,6 @@
       "error": "net::ERR_ABORTED"
     },
     {
-      "url": "http://localhost:5174/api/auth/me",
-      "error": "net::ERR_ABORTED"
-    },
-    {
-      "url": "http://localhost:5174/api/auth/me",
-      "error": "net::ERR_ABORTED"
-    },
-    {
       "url": "http://localhost:5174/api/orders?sort=total_cents&dir=desc&limit=50",
       "error": "net::ERR_ABORTED"
     },
@@ -22,19 +14,19 @@
       "error": "net::ERR_ABORTED"
     },
     {
-      "url": "http://localhost:5174/api/orders?sort=created_at&dir=desc&limit=50&status=pending&_delayMs=1015",
+      "url": "http://localhost:5174/api/orders?sort=created_at&dir=desc&limit=50&status=pending&_delayMs=923",
       "error": "net::ERR_ABORTED"
     },
     {
-      "url": "http://localhost:5174/api/orders?sort=created_at&dir=desc&limit=50&status=paid&_delayMs=343",
+      "url": "http://localhost:5174/api/orders?sort=created_at&dir=desc&limit=50&status=paid&_delayMs=138",
       "error": "net::ERR_ABORTED"
     },
     {
-      "url": "http://localhost:5174/api/orders?sort=total_cents&dir=desc&limit=50&status=paid&_delayMs=1629",
+      "url": "http://localhost:5174/api/orders?sort=total_cents&dir=desc&limit=50&status=paid&_delayMs=240",
       "error": "net::ERR_ABORTED"
     },
     {
-      "url": "http://localhost:5174/api/orders?sort=total_cents&dir=asc&limit=50&status=paid&cursor=eyJ2IjoxNTUwLCJpZCI6MTE1MDB9&_delayMs=637",
+      "url": "http://localhost:5174/api/orders?sort=total_cents&dir=asc&limit=50&status=paid&cursor=eyJ2IjoxNTUwLCJpZCI6MTE1MDB9&_delayMs=1263",
       "error": "net::ERR_ABORTED"
     },
     {

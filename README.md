@@ -1,14 +1,14 @@
-# SARH Orders Console — Junior track
+# SARH Orders Console — Junior assessment
 
-React 18 + TypeScript frontend, Express 4 + Node 24 backend, and a real SQLite
-database. Agents can search, filter, sort, page through and create orders; admins
-can also delete individual orders. The server enforces both authentication and
-authorization.
+A local React 18 + TypeScript application with an Express/Node API and file-backed
+SQLite. Agents can find and create orders; admins can also delete individual orders.
+The two main guarantees are that obsolete list responses cannot replace the latest
+selection and retries of the same create attempt cannot create another order.
 
-## Install and run
+## Run locally
 
-Tested on Windows with **Node 24.14.0 and npm 11.9.0**. Use Node 24
-(`.nvmrc` is provided). From this directory:
+Prerequisites: **Node 24.14.x or newer within Node 24** (engine: `>=24.14.0 <25`),
+npm (tested with **11.9.0**), and Google Chrome for browser tests.
 
 ```powershell
 npm ci
@@ -17,49 +17,30 @@ npm run seed
 npm run dev
 ```
 
-- Frontend: http://localhost:5173
-- API: http://localhost:4000/api/health
-- Browser requests use `/api` through Vite's same-origin proxy. No CORS setup.
-- Both services bind to loopback. Stop the foreground development command with Ctrl+C.
-- `npm run setup` creates a random local JWT secret and never overwrites an
-  existing `.env`. Never commit `.env`, databases or node_modules.
-- SQLite lives at `server/data/orders.db` by default. `DB_PATH` is relative to
-  `server/`, independent of the terminal's current directory.
-- Schema migration runs on database open and uses `CREATE ... IF NOT EXISTS`.
-  There is no destructive migration or separate migration service.
-- Seed creates 50,000 orders and both users. Running it again preserves existing
-  orders and users. Do **not** use `npm run seed -- --reset` on valuable data:
-  that explicit maintenance option deletes all orders, items and keys.
-- A native SQLite prebuilt binary installed successfully on this Windows/Node
-  combination. On other platforms a missing prebuild may require C++ build tools.
+Open **http://localhost:5173**. API health: **http://localhost:4000/api/health**.
+Both services bind locally. Vite proxies browser `/api` requests to the API.
+Stop the foreground process with Ctrl+C.
 
-Local development credentials (synthetic assessment data only):
-
-| Role | Email | Password |
+| Role | Synthetic email | Password |
 |---|---|---|
-| Admin | `admin@sarh.test` | `Admin#12345` |
-| Agent | `agent@sarh.test` | `Agent#12345` |
+| Admin | admin@sarh.test | Admin#12345 |
+| Agent | agent@sarh.test | Agent#12345 |
 
-## Sign up
+Accounts are seeded; **public sign-up is not available**. This is an internal
+operations console containing customer information. The earlier registration
+feature was removed, including its API, and a test asserts it cannot create accounts.
 
-Choose **Create an account** on the sign-in screen. Enter an email, a password
-of at least 8 characters (maximum 72 UTF-8 bytes), and matching confirmation.
-Successful registration signs you in immediately with **Agent** permissions.
-Public registration cannot create admins; role injection is rejected.
+`setup` creates a random local JWT secret and preserves an existing `.env`.
+Never commit `.env`, database files or `node_modules`. The default SQLite file is
+`server/data/orders.db`. Seed creates 50,000 orders with 1–5 items and both users;
+normal reruns preserve existing orders. **Do not use `--reset` on valuable data.**
 
-`POST /api/auth/signup` accepts `{email,password}`, normalizes email and stores
-a bcrypt cost-10 hash. It returns 201 `{user}` and the same HttpOnly,
-SameSite=Strict, 15-minute session cookie used by login. Invalid input returns
-400; an existing email returns 409 `EMAIL_IN_USE`, including simultaneous
-registrations. A database unique constraint enforces that guarantee.
-Registration allows ten attempts per IP per 15 minutes, including successes
-(disabled in test mode). There is no email verification, invitation requirement
-or password reset. This user-requested addition enables public Agent access to
-the console, and duplicate-email feedback reveals whether an account exists.
-After an uncertain registration response, sign in with the submitted credentials;
-registration itself does not use order idempotency keys.
+Configuration is documented in `.env.example`: `PORT`, `DB_PATH`,
+`JWT_SECRET` (required, at least 32 characters), `NODE_ENV`, `COOKIE_SECURE`.
+Relative DB paths resolve from `server/`. Local HTTP uses Secure=false.
+Production defaults Secure=true only when the explicit override is absent.
 
-## Checks and production build
+## Tests and build
 
 ```powershell
 npm run typecheck
@@ -70,221 +51,154 @@ npm run prove:duplicates
 npm run test:e2e
 ```
 
-`verify:db` reads the configured database without modifying it. It checks all
-totals, 1–5 items per order, five statuses, canonical UTC dates, SQLite integrity,
-foreign keys, seeded credentials/hash cost and real query plans.
+- Typecheck covers server, client, tests and tool configurations.
+- Vitest exercises real temporary SQLite databases and deterministic client races.
+- `verify:db` is read-only: counts, all totals/item counts, dates, integrity, foreign
+  keys, seeded password hashes and actual query plans.
+- `prove:duplicates` needs the running API. It logs in, handles the real cookie,
+  sends two parallel creates and twenty retries, checks one identity and verifies
+  changed-body rejection. **Each run adds two synthetic orders.**
+- E2E uses installed Chrome, the compiled API, and its own seeded temporary database
+  on ports 4100/5174. Build first; those ports must be free.
+- `npm start` runs the compiled API only. In another terminal,
+  `npm exec --workspace client -- vite preview --port 5173` serves the built client
+  for local review. This is not a production deployment.
 
-`prove:duplicates` requires the running development API and seeded agent. It
-logs in, handles the token cookie, sends two identical parallel requests and
-then 20 retries, checks the same order identity, rejects changed-body reuse
-with 422 and verifies a new key creates a new order. It deliberately leaves two
-`proof-<uuid>` orders. `BASE_URL` can override the API address.
+Dated results and exact exits are in [docs/evidence](docs/evidence/README.md).
+A screenshot is supporting evidence, not proof of request ordering by itself.
 
-`test:e2e` requires **Google Chrome** installed and a completed `npm run build`.
-It starts an isolated API on 4100 and Vite on 5174, seeds a temporary file-backed
-database, runs browser scenarios and removes only its own temporary database.
-The regular 4000/5173 services and local database are untouched. Ports 4100 and
-5174 must be free. For a machine without Chrome, install it or explicitly adapt
-the Playwright browser channel; no browser download is hidden in `npm ci`.
+## R1: list behavior and indexes
 
-`npm run build` compiles the API and copies `schema.sql`, then builds the client.
-`npm start` runs the compiled API only. To inspect the compiled client locally,
-start `npm start` in one terminal and the following in another:
+`GET /api/orders` requires authentication and accepts `q`, `status`,
+`sort=created_at|total_cents`, `dir=asc|desc`, `cursor` and `limit`.
+The default page is 50; the maximum is 100. Search matches customer name/email
+case-insensitively, trims input and treats SQL wildcard characters literally.
+The default is all statuses, newest first.
 
-```powershell
-npm exec --workspace client -- vite preview --port 5173
-```
+Keyset pagination orders by the selected value and ID. The API fetches at most
+`limit + 1` rows, returns at most `limit`, and uses the extra row to determine
+whether to return a next cursor. The browser never prefetches the entire table.
 
-The preview inherits Vite's API proxy. This is a local review path, not a
-deployment recipe; no external deployment has been performed.
-
-## Orders and indexes
-
-`GET /api/orders` accepts `q`, `status`, `sort=created_at|total_cents`,
-`dir=asc|desc`, `cursor` and `limit`. Default page size is 50; limits outside
-1–100 are rejected. Search is a trimmed, case-insensitive name/email contains
-match, with `%`, `_` and `\` treated literally. Sort columns are whitelisted,
-values are parameterized and cursors are validated.
-
-Keyset pagination uses `(sort column, id)` in the same direction for both
-values. SQL fetches at most `limit + 1` rows; item counts are correlated indexed
-lookups on the page, not a whole-table join. The browser requests pages as
-needed and never prefetches the entire table. There is no total-count query.
-
-| Index | Query served |
+| Index/constraint | Purpose |
 |---|---|
-| `idx_orders_created` | Date sort and keyset pagination without a status |
-| `idx_orders_status_created` | Status equality plus date sort/keyset |
-| `idx_orders_total` | Amount sort/keyset without a status |
-| `idx_orders_status_total` | Status equality plus amount sort/keyset |
-| `idx_items_order` | Page item counts and dependent item deletion |
-| `PRIMARY KEY (user_id, key)` | Unique idempotency key per authenticated user |
-| `users.email` unique index | Login lookup |
+| `idx_orders_created` | Date/ID ordering and cursor |
+| `idx_orders_status_created` | Status equality then date/ID |
+| `idx_orders_total` | Amount/ID ordering and cursor |
+| `idx_orders_status_total` | Status equality then amount/ID |
+| `idx_items_order` | Item counts and dependent-item lookup |
+| Unique `users.email` | Login lookup |
+| Primary key `(user_id,key)` | Durable idempotency uniqueness |
 
-The leading-wildcard contains search is a filtered scan. Token-based SQLite
-FTS5 is **not** a drop-in replacement for arbitrary substring matching; a
-trigram search design would require separate semantics and measurements.
-Actual EXPLAIN results are recorded in `docs/evidence/database-verification.txt`.
+Search has a 300 ms debounce. Filter/sort changes invalidate old requests immediately,
+including during debounce. AbortController plus generation checks guard success,
+errors and loading updates, including Load more. The development-only **Simulate
+slow network** option demonstrates delays; production ignores the API delay option.
 
-Search waits 300 ms after the latest query change. Filter/sort changes invalidate
-old requests immediately, even during that interval. An AbortController plus
-generation check protects success, error and loading state, including Load more.
-The development-only **Simulate slow network** checkbox adds randomized delays
-up to 2500 ms. The API ignores `_delayMs` in production.
+Contains search can still scan. Repeated Load more grows the DOM, and multiple pages
+are not a snapshot across concurrent inserts/deletes. These limits are intentional.
 
-## Creating orders and avoiding duplicates
+## R2: validation, idempotency and retry
 
-Client validation and Zod server validation enforce 1–5 items, quantities
-1–1000, prices 0–10,000,000 cents, trimmed names 1–120 characters and a valid
-email of at most 254 characters. Decimal prices are parsed as strings into
-integer cents. The server calculates totals and ignores submitted totals,
-status, ids and timestamps. New orders are pending.
+The form and server enforce 1–5 items, integer quantities 1–1000, unit prices
+0–10,000,000 cents, trimmed names 1–120 characters and valid email up to 254.
+Decimal inputs are parsed into integer cents. The server computes the total,
+sets pending status and UTC creation time, and ignores submitted totals/IDs/status.
 
-Each normalized form submission gets a UUID v4 `Idempotency-Key`. A SHA-256
-hash covers normalized name/email/items in stable property order. One
-`BEGIN IMMEDIATE` transaction looks up the user's key, compares the hash and
-either replays the stored order, rejects changed-body reuse, or inserts the
-order, items and unique key atomically. No partial order survives rollback.
-The database uniqueness constraint is the final backstop.
+One UUID v4 `Idempotency-Key` identifies a create attempt for an authenticated user.
+A normalized body hash distinguishes replay from changed-body reuse. One SQLite
+immediate transaction inserts the order, items and unique key together.
 
-- New order: 201. Same user/key/body: 200 with the same order identity and
-  `Idempotent-Replayed: true`. Same key/different body: 422.
-- Double-clicks are guarded synchronously and by a disabled button.
-- Timeout (10 seconds), network failure and 5xx preserve the body/key for Retry.
-- Pending body/key are saved in sessionStorage before transmission. Reload or
-  expiry followed by same-user login restores Retry. Success or 422 clears it.
-- Explicit logout or a different user clears the pending attempt.
-- Replays return the stored order's current state, not a permanently cached response.
+| Result | Behavior |
+|---|---|
+| New attempt | 201 with the created order |
+| Same user/key/normalized body | 200 with the same identity and `Idempotent-Replayed: true` |
+| Same user/key, different body | 422 `IDEMPOTENCY_KEY_REUSED` |
+| Network failure, ten-second timeout or 5xx | Client preserves original body/key for explicit Retry |
+| Session loss | Same-user login can restore the pending attempt |
+| Success, explicit logout or user switch | Pending browser attempt is cleared |
 
-## Security review and token storage
+The pending body/key is saved in sessionStorage before sending; it is customer data,
+not a token. Storage denial/tab closure can lose retry context. Editing an uncertain
+attempt and submitting with a new key can create another business order. Different
+keys/users are not deduplicated. Deleting an order removes its key; otherwise keys
+do not expire. Replay reads current order data rather than an immutable response.
+The proof establishes one-process HTTP behavior, not a distributed stress benchmark.
 
-The original five-page `SARH_FullStack_Take-Home_Test_v2.pdf` was read from the
-candidate-provided Downloads path during integration. The section 3 snippet was
-checked against the earlier `imp3.txt` review and the integrated implementation.
-The detailed review is in [docs/SECURITY_REVIEW.md](docs/SECURITY_REVIEW.md).
+## Security review and changes
 
-| Reported finding | Severity | Implemented correction / remaining limit |
-|---|---|---|
-| Hardcoded signing secret | High | Random local secret from setup; required config, ignored `.env`. No rotation UI. |
-| `jwt.decode` used for authentication | Critical | `jwt.verify`, signature and claim validation; forged/wrong-secret tokens rejected. |
-| No expiry | High | 15-minute JWT and cookie; missing or expired `exp` rejected. No refresh/revocation. |
-| Algorithm not pinned | Medium | HS256 explicitly pinned for signing and verification; unsigned tokens rejected. |
-| Token accepted from query string | Medium | Only the HttpOnly cookie is accepted; query and Authorization header are ignored. |
-| Direct password comparison | Critical | bcrypt cost 10 hashes, email-only parameterized lookup, bcrypt compare and dummy-hash compare for missing users. The snippet compares raw credentials; its unshown data layer does not establish exact storage behavior. |
-| Admin check only in React | Critical | Server role guard on DELETE; agent 403, admin 204, absent cookie 401. |
-| Unvalidated login/delete input | High | Bounded Zod input shapes, positive integer ids, parameterized SQL; no unsupported claim that the original ORM was SQL-injectable. |
-| No brute-force protection | High | 10 failed logins/15 min/IP, safe 429; in-memory/per-process, disabled only in test config. |
-| Express 4 async error handling missing | High | Async routes catch and forward errors; safe consistent JSON, malformed/oversized JSON rejected; SQLITE_BUSY maps to retryable 503. |
-| Entire unverified token trusted as user | High | Only validated id/role copied; `/me` checks current DB user. Role/deleted-user access can remain valid on order routes until expiry. |
-| Token in JSON, numeric subject, unconditional delete success, inconsistent errors | Low | Cookie-only login response, string JWT subject, 204/404 deletion, `{error:{code,message,details?}}`; no stack/SQL returned. |
+I reviewed the supplied authentication snippet against the implemented routes.
+Detailed findings and qualified exploit descriptions are in
+[docs/SECURITY_REVIEW.md](docs/SECURITY_REVIEW.md).
 
-**Token-storage answer:** The token is stored in an HttpOnly, SameSite=Strict
-cookie, reducing token theft through JavaScript and preventing most cross-site
-cookie requests. CSRF protection relies on SameSite alone; XSS can still act as
-the signed-in user, and same-site threats are not fully prevented. Secure cookies
-are disabled for localhost HTTP and default to enabled in production when
-`COOKIE_SECURE` is absent; the supplied local `.env` explicitly sets false.
+| Problem found | Change and remaining limit |
+|---|---|
+| Hardcoded secret | Random local secret; validated environment and ignored real configuration. No rotation facility. |
+| `jwt.decode` accepted as authentication | Verify signature, allowed HS256 algorithm, expiry, positive subject and supported role. |
+| Tokens never expire | 15-minute JWT/cookie; reject missing or expired expiry. No refresh or revocation. |
+| No explicit algorithm policy | HS256 pinned on sign and verify; unsigned/forged tokens rejected. |
+| Token in query string | Only cookie credentials accepted; URLs and bearer headers are ignored. |
+| Direct password comparison | bcrypt cost 10 and parameterized email lookup. The snippet's unseen data layer does not prove plaintext storage. |
+| Admin check only in React | Server enforces admin role on DELETE; agents receive 403 even through direct HTTP. |
+| Unvalidated input | Zod checks shapes/bounds; valid positive IDs and bound SQL values. The original unnamed ORM does not prove SQL injection. |
+| Unlimited failed logins | Ten failures per IP/15 minutes; safe 429. In-memory/per-process, disabled in test mode. |
+| Async errors not handled in Express 4 | Catch/forward errors; safe JSON without client stack/SQL. SQLite busy maps to 503. |
+| Whole unverified payload trusted | Copy only validated ID/role. `/me` checks current user; order-role claims remain cached until expiry. |
+| Token returned in JSON | Set only the session cookie, return safe user fields. |
+| Numeric JWT subject | Use a string subject. |
+| Unconditional delete success | Return 204 on deletion, 404 when absent; cascade items and keys. |
+| Inconsistent errors | Consistent `{error:{code,message,details?}}`; malformed/oversized JSON returns safe 400. |
 
-Additional boundaries: no token in localStorage or sessionStorage; only the
-pending draft/key use sessionStorage and therefore hold customer data until
-cleared or the tab closes. Login errors do not reveal whether the email exists.
-The dummy compare reduces timing differences without claiming constant time.
-API responses reaching the API middleware use `Cache-Control: no-store`;
-JSON parser errors occur before that middleware. React renders values as text.
-No CORS middleware, raw HTML rendering, remote analytics or third-party assets.
+**Token-storage answer:** I store the session token in an HttpOnly,
+SameSite=Strict cookie, which prevents ordinary JavaScript from reading it and
+limits cross-site cookie requests. This reduces direct token theft and most
+CSRF, but XSS can still act as the signed-in user, and there is no separate
+CSRF token or Origin check. Secure is disabled for localhost HTTP and must be
+enabled for HTTPS deployment; the explicit local override does not change
+automatically just because NODE_ENV changes.
 
-## Decisions, assumptions and provenance
+Wrong-email and wrong-password login failures are identical. A dummy bcrypt
+comparison reduces timing differences without claiming constant time.
+Normal API responses use no-store; parser errors precede that middleware.
+React renders text without raw HTML injection. There is no public registration
+endpoint exposing email-existence feedback.
 
-[DECISIONS.md](DECISIONS.md) records three actual engineering decisions,
-alternatives and limits, including server idempotency. These are implementation
-tradeoffs, not an invented account of the candidate's personal reasoning.
+## Decisions and AI use
 
-- Display currency is USD. Total is computed from line items instead of typed.
-- Seed PRNG is fixed; dates are offsets from seed runtime, so absolute timestamps
-  differ across runs. Default seed created 149,622 items.
-- The contract's Node 20 was an earlier engineering choice. The installed Node
-  24 was retained and the SQLite dependency updated for compatibility. Express 4,
-  React 18, SQLite and the supplied structure were retained.
-- Inputs were `OUTPUTS/{integrator,imp1,imp2,imp3,imp4,projectLead}.txt` and
-  `BlockB-FINAL.txt`. No original inputs were modified; no archives were present.
-- The original PDF was subsequently supplied at
-  `C:\Users\Precision 5550\Downloads\SARH_FullStack_Take-Home_Test_v2.pdf`.
-  All five pages were read, with pages 2–3 also rendered for visual inspection.
-  [docs/REQUIREMENTS.md](docs/REQUIREMENTS.md) maps its mandatory scope to evidence.
+[DECISIONS.md](DECISIONS.md) contains three seven-line decisions, alternatives,
+reasons and limits. I used **Claude and Codex** for implementation assistance,
+review, integration, automated verification and documentation; the division of
+work is disclosed there. My personal active time coordinating this AI-assisted
+work was under two hours as reported on 21 October 2026, not a measurement of
+total agent runtime.
 
-**AI-use disclosure:** Earlier AI deliveries supplied the scaffold, database/list,
-create/idempotency, authentication/security and React code. Codex extracted and
-reviewed those deliveries, completed integration, updated dependencies, repaired
-request races, added tests, ran local verification and wrote these documents.
-At the candidate's later request, Codex also implemented and tested public
-Agent sign-up; this addition is not an original assessment requirement.
-No claim is made that the candidate personally wrote, reviewed or understood
-each part. **Candidate confirmation required:** verify this disclosure against
-the tools actually used, review all code and explain the implementation in
-your own words before submission.
+The code explanation and safe modification examples are in
+[docs/CODE_GUIDE.md](docs/CODE_GUIDE.md). It covers the real files, concepts and
+request flows; it does not claim that future exercises are implemented.
 
-## Product question — candidate personal review required
+## Product question
 
 I would ask what problem deletion solves: clutter, reporting accuracy, storage, or something else.  
 I would clarify retention, audit, refund requirements, who may delete, and whether recovery is necessary.  
 If those questions cannot be answered, I would propose hiding cancelled orders by default with a reversible archive option, rather than permanent deletion.
 
-This three-line draft was provided by the candidate for personal review.
-It answers the written question; no bulk-delete or archive feature was implemented.
+## What I skipped and why
 
-## What was skipped and known limits
+- I skipped optional O1 slow stats and O2 optimistic create to concentrate on
+  mandatory R1/R2 correctness. Neither is required.
+- SCALE.md is Senior-only; this is the Junior submission.
+- No bulk-delete/archive implementation: the product question asks for judgment.
+- No Docker, deployment or hosted service: everything is a local assessment.
+- No MFA, password reset, refresh/revocation, audit log, additional CSRF token,
+  TLS termination or production monitoring.
+- Signed roles can remain effective until expiry. Login rate limits are per
+  process/IP; a local proxy makes clients share an apparent address.
+- Schema setup is not a versioned migration system; idempotency user IDs have no
+  foreign key to users. bcrypt considers at most 72 password bytes.
+- No search-at-millions benchmark, full accessibility audit or mobile/browser matrix.
 
-- O1 (slow stats) and O2 (optimistic create) were intentionally skipped to focus
-  on mandatory R1/R2; the brief explicitly permits skipping both. SCALE.md is
-  senior-only and excluded for this Junior submission.
-- No Docker or deployment: neither is needed for the local assessment.
-  No email/submission or remote push was performed by Codex.
-  Git currently has two inspected commits, `8cde75b` and `a2e1cd6`, plus subsequent local
-  changes. Preserve that history and commit reviewed changes honestly;
-  historical incremental development cannot be reconstructed.
-- Keys never expire; deleting an order cascades to its key and allows later
-  recreation with that key. Different keys/users or deliberate new submissions
-  can create equivalent orders. Editing after an ambiguous failure can create a
-  second order. Explicit logout/tab closure/storage denial can lose retry context.
-- This is not semantic/business duplicate detection. The live proof is concurrent
-  HTTP to one synchronous SQLite Node process, not a multi-process stress test.
-- Contains search scans; no virtualized DOM or fixed cap on repeatedly loaded
-  pages, though every server request is bounded. No live snapshot isolation
-  across pages during external inserts/deletes. No benchmark at millions of rows.
-- Signed roles are cached up to 15 minutes. No MFA, refresh, revocation, password
-  reset, audit log, TLS termination, CSP hardening or additional CSRF token.
-  bcrypt considers at most 72 password bytes. Rate limits are per IP/process;
-  the local proxy makes browser clients share the same IP.
-- Setup, seeds and tests are local-only. Edge assertions passed but its browser
-  profile cleanup hung; the supported automated run uses Chrome instead.
-- The candidate reports under two hours of personal active work as of
-  20 October 2026. Combined effort across earlier deliveries and integration
-  was not independently measured. The brief specifies about five hours and
-  stopping if past six; this is not a certification of cumulative compliance.
+## Evidence
 
-## Evidence and submission work
-
-See [docs/evidence/README.md](docs/evidence/README.md) for actual execution logs,
-screenshots and what they prove. A still image does not establish race safety;
-controlled request-order assertions and the saved execution report do.
-Latest checks on 20 October: typecheck, 136 server + 6 client tests, production
-build and read-only database verification passed. The final direct Chrome run
-passed all 10 scenarios in 43.9 seconds and exited 0; an immediately preceding
-attempt hung at shutdown despite passing assertions. See
-[final-verification.md](docs/evidence/final-verification.md) for that distinction.
-Fresh-machine `npm ci` and full under-five-minute setup timing remain unverified.
-
-Before submission, the candidate must confirm the product answer, actual work
-hours, AI disclosure and the three decisions; review the runnable
-code; make honest Git commits; and record the requested walkthrough or select
-the required screenshots. The original brief requires a two-minute recording
-or three screenshots covering R1 (including rapid filters) and the R2 proof.
-Submit the Git link as Junior to `m.alharbi@sarh.ai` by Thursday 22 October 2026,
-end of day; the brief does not specify a timezone. Codex has not emailed or pushed.
-
-The complete file-by-file checklist and a ready-to-review submission email are
-in [SUBMISSION.md](SUBMISSION.md). Use the actual required filenames
-`README.md` and `DECISIONS.md` (not `Read.md` or `Decision.md`).
-The three selected screenshots are `01-agent-list.png`, `02-latest-filter.png`
-and `04-duplicate-proof.png` under `docs/evidence/`; include their execution
-logs and `race-execution.json` so the rapid-filter claim is supported.
+[SUBMISSION.md](SUBMISSION.md) is the short evidence index.
+[docs/REQUIREMENTS.md](docs/REQUIREMENTS.md) maps the original brief to files.
+[docs/evidence/final-verification.md](docs/evidence/final-verification.md) records
+the verified scope, dates, command results and remaining environment limits.

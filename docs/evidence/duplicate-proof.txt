@@ -1,3 +1,4 @@
+Started: 2026-10-21T20:02:04.6263234+03:00
 
 > sarh-orders-console@1.0.0 prove:duplicates
 > npm run prove:duplicates --workspace server
@@ -7,10 +8,11 @@
 > tsx src/scripts/prove-no-duplicates.ts
 
 ok - logged in as agent@sarh.test and captured the token cookie
-ok - two parallel requests with one key gave one 201 and one 200 for order 50003
+ok - two parallel requests with one key gave one 201 and one 200 for order 50006
 ok - 20 further parallel retries all returned 200 with the same order
 ok - listing by the unique customer name returns exactly one order
 ok - same key with a different body returned 422 IDEMPOTENCY_KEY_REUSED
-ok - fresh key with a different customer name created a new order 50004
+ok - fresh key with a different customer name created a new order 50007
 ok - the first customer name still matches exactly one order
 PASS
+EXIT_CODE=0

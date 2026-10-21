@@ -90,34 +90,6 @@ async function assertLatestRows(page: Page) {
   await expect(page.getByRole('alert')).toHaveCount(0);
 }
 
-test('signup validates confirmation, creates an agent session and rejects duplicate email', async ({ page }) => {
-  const email = `signup-${randomUUID()}@example.test`;
-  await page.goto('/');
-  await page.getByRole('button', { name: 'Create an account', exact: true }).click();
-  await page.getByLabel('Email', { exact: true }).fill(email);
-  await page.getByLabel('Password', { exact: true }).fill('Signup#123');
-  await page.getByLabel('Confirm password', { exact: true }).fill('different');
-  await page.getByRole('button', { name: 'Create account', exact: true }).click();
-  await expect(page.getByRole('alert')).toHaveText('Passwords do not match.');
-  await page.getByLabel('Confirm password', { exact: true }).fill('Signup#123');
-  await page.getByRole('button', { name: 'Create account', exact: true }).click();
-  await expect(page.locator('tbody tr')).toHaveCount(50);
-  await expect(page.getByRole('button', { name: /^Delete order/ })).toHaveCount(0);
-  await page.reload();
-  await expect(page.locator('tbody tr')).toHaveCount(50);
-  await page.getByRole('button', { name: 'Log out', exact: true }).click();
-  await page.getByRole('button', { name: 'Create an account', exact: true }).click();
-  await page.getByLabel('Email', { exact: true }).fill(email);
-  await page.getByLabel('Password', { exact: true }).fill('Signup#123');
-  await page.getByLabel('Confirm password', { exact: true }).fill('Signup#123');
-  await page.getByRole('button', { name: 'Create account', exact: true }).click();
-  await expect(page.getByRole('alert')).toContainText('already has an account');
-  await page.getByRole('button', { name: 'Already have an account? Sign in', exact: true }).click();
-  await page.getByLabel('Password', { exact: true }).fill('Signup#123');
-  await page.getByRole('button', { name: 'Sign in', exact: true }).click();
-  await expect(page.locator('tbody tr')).toHaveCount(50);
-});
-
 test('login, bounded pagination, name/email search, all sorts and logout', async ({ page }) => {
   await login(page);
   await expect(page.getByRole('button', { name: /^Delete order/ })).toHaveCount(0);

@@ -5,15 +5,6 @@ interface UserResponse {
   user: User;
 }
 
-export async function signup(email: string, password: string): Promise<User> {
-  const response = await request<UserResponse>('/auth/signup', {
-    method: 'POST',
-    body: { email: email.trim(), password },
-    reportUnauthorized: false,
-  });
-  return response.data.user;
-}
-
 export async function login(email: string, password: string): Promise<User> {
   const response = await request<UserResponse>('/auth/login', {
     method: 'POST',

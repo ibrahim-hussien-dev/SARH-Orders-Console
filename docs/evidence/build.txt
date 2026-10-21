@@ -1,3 +1,4 @@
+Started: 2026-10-21T20:00:32.5415672+03:00
 
 > sarh-orders-console@1.0.0 build
 > npm run build --workspace server && npm run build --workspace client
@@ -18,5 +19,6 @@ rendering chunks...
 computing gzip size...
 dist/index.html                   0.42 kB │ gzip:  0.28 kB
 dist/assets/index-DEOOL0SV.css    2.65 kB │ gzip:  1.06 kB
-dist/assets/index-TyU_Grjg.js   171.38 kB │ gzip: 55.00 kB
-✓ built in 1.46s
+dist/assets/index-BVmbuLg5.js   170.06 kB │ gzip: 54.59 kB
+✓ built in 1.31s
+EXIT_CODE=0

@@ -110,40 +110,6 @@
       "line": 0,
       "specs": [
         {
-          "title": "signup validates confirmation, creates an agent session and rejects duplicate email",
-          "ok": true,
-          "tags": [],
-          "tests": [
-            {
-              "timeout": 45000,
-              "annotations": [],
-              "expectedStatus": "passed",
-              "projectId": "",
-              "projectName": "",
-              "results": [
-                {
-                  "workerIndex": 0,
-                  "parallelIndex": 0,
-                  "status": "passed",
-                  "duration": 2788,
-                  "errors": [],
-                  "stdout": [],
-                  "stderr": [],
-                  "retry": 0,
-                  "startTime": "2026-10-20T17:22:31.147Z",
-                  "annotations": [],
-                  "attachments": []
-                }
-              ],
-              "status": "expected"
-            }
-          ],
-          "id": "de3f15501f825e0a6f88-fc8e11bcc09642f1b8da",
-          "file": "orders.spec.ts",
-          "line": 93,
-          "column": 5
-        },
-        {
           "title": "login, bounded pagination, name/email search, all sorts and logout",
           "ok": true,
           "tags": [],
@@ -159,12 +125,19 @@
                   "workerIndex": 0,
                   "parallelIndex": 0,
                   "status": "passed",
-                  "duration": 3685,
+                  "duration": 3640,
                   "errors": [],
                   "stdout": [],
-                  "stderr": [],
+                  "stderr": [
+                    {
+                      "text": "  \u001b[30;1mpw:browser \u001b[0m<launching> C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe --disable-field-trial-config --disable-background-networking --disable-background-timer-throttling --disable-backgrounding-occluded-windows --disable-back-forward-cache --disable-breakpad --disable-client-side-phishing-detection --disable-component-extensions-with-background-pages --disable-component-update --no-default-browser-check --disable-default-apps --disable-dev-shm-usage --disable-edgeupdater --disable-extensions --disable-features=AvoidUnnecessaryBeforeUnloadCheckSync,DestroyProfileOnBrowserClose,DialMediaRouteProvider,GlobalMediaControls,HttpsUpgrades,LensOverlay,MediaRouter,PaintHolding,ThirdPartyStoragePartitioning,BlockOriginHeaderModificationOnRedirect,AvoidCorsURLLoaderRestartOnRedirect,Translate,AutoDeElevate,OptimizationHints,NetworkTimeServiceQuerying,AimEnabled,msForceBrowserSignIn,msEdgeUpdateLaunchServicesPreferredVersion --enable-features=CDPScreenshotNewSurface --allow-pre-commit-input --disable-hang-monitor --disable-ipc-flooding-protection --disable-popup-blocking --disable-prompt-on-repost --disable-renderer-backgrounding --disable-updater-scheduler --force-color-profile=srgb --metrics-recording-only --no-first-run --password-store=basic --use-mock-keychain --no-service-autorun --export-tagged-pdf --disable-search-engine-choice-screen --unsafely-disable-devtools-self-xss-warnings --edge-skip-compat-layer-relaunch --disable-infobars --disable-search-engine-choice-screen --disable-sync --enable-unsafe-swiftshader --headless --hide-scrollbars --mute-audio --blink-settings=primaryHoverType=2,availableHoverTypes=2,primaryPointerType=4,availablePointerTypes=4 --no-sandbox --user-data-dir=C:\\Users\\PRECIS~1\\AppData\\Local\\Temp\\playwright_chromiumdev_profile-8mdGUm --remote-debugging-pipe --no-startup-window \u001b[30m+0ms\u001b[0m\n"
+                    },
+                    {
+                      "text": "  \u001b[30;1mpw:browser \u001b[0m<launched> pid=12328 \u001b[30m+32ms\u001b[0m\n"
+                    }
+                  ],
                   "retry": 0,
-                  "startTime": "2026-10-20T17:22:39.622Z",
+                  "startTime": "2026-10-21T17:10:50.962Z",
                   "annotations": [],
                   "attachments": []
                 }
@@ -174,7 +147,7 @@
           ],
           "id": "de3f15501f825e0a6f88-24b2957570f9b895a2d2",
           "file": "orders.spec.ts",
-          "line": 121,
+          "line": 93,
           "column": 5
         },
         {
@@ -193,12 +166,16 @@
                   "workerIndex": 0,
                   "parallelIndex": 0,
                   "status": "passed",
-                  "duration": 2541,
+                  "duration": 2369,
                   "errors": [],
                   "stdout": [],
-                  "stderr": [],
+                  "stderr": [
+                    {
+                      "text": "  \u001b[30;1mpw:browser \u001b[0m[pid=12328][err] [12328:36196:1021/201100.970:ERROR:google_apis\\gcm\\engine\\registration_request.cc:291] Registration response error message: DEPRECATED_ENDPOINT \u001b[30m+5s\u001b[0m\n"
+                    }
+                  ],
                   "retry": 0,
-                  "startTime": "2026-10-20T17:22:43.364Z",
+                  "startTime": "2026-10-21T17:11:00.371Z",
                   "annotations": [],
                   "attachments": []
                 }
@@ -208,7 +185,7 @@
           ],
           "id": "de3f15501f825e0a6f88-0236f8b71c1f943c8b3f",
           "file": "orders.spec.ts",
-          "line": 147,
+          "line": 119,
           "column": 5
         },
         {
@@ -227,12 +204,12 @@
                   "workerIndex": 0,
                   "parallelIndex": 0,
                   "status": "passed",
-                  "duration": 1749,
+                  "duration": 1488,
                   "errors": [],
                   "stdout": [],
                   "stderr": [],
                   "retry": 0,
-                  "startTime": "2026-10-20T17:22:45.950Z",
+                  "startTime": "2026-10-21T17:11:02.779Z",
                   "annotations": [],
                   "attachments": []
                 }
@@ -242,7 +219,7 @@
           ],
           "id": "de3f15501f825e0a6f88-b260125bdb13c577fc93",
           "file": "orders.spec.ts",
-          "line": 208,
+          "line": 180,
           "column": 5
         },
         {
@@ -261,12 +238,12 @@
                   "workerIndex": 0,
                   "parallelIndex": 0,
                   "status": "passed",
-                  "duration": 1697,
+                  "duration": 1682,
                   "errors": [],
                   "stdout": [],
                   "stderr": [],
                   "retry": 0,
-                  "startTime": "2026-10-20T17:22:47.723Z",
+                  "startTime": "2026-10-21T17:11:04.293Z",
                   "annotations": [],
                   "attachments": []
                 }
@@ -276,7 +253,7 @@
           ],
           "id": "de3f15501f825e0a6f88-b4c48a5753fb5d93cf5e",
           "file": "orders.spec.ts",
-          "line": 233,
+          "line": 205,
           "column": 5
         },
         {
@@ -295,12 +272,12 @@
                   "workerIndex": 0,
                   "parallelIndex": 0,
                   "status": "passed",
-                  "duration": 2056,
+                  "duration": 1808,
                   "errors": [],
                   "stdout": [],
                   "stderr": [],
                   "retry": 0,
-                  "startTime": "2026-10-20T17:22:49.441Z",
+                  "startTime": "2026-10-21T17:11:05.999Z",
                   "annotations": [],
                   "attachments": []
                 }
@@ -310,7 +287,7 @@
           ],
           "id": "de3f15501f825e0a6f88-31ec95991cebd2c16e02",
           "file": "orders.spec.ts",
-          "line": 266,
+          "line": 238,
           "column": 5
         },
         {
@@ -329,12 +306,12 @@
                   "workerIndex": 0,
                   "parallelIndex": 0,
                   "status": "passed",
-                  "duration": 3141,
+                  "duration": 2765,
                   "errors": [],
                   "stdout": [],
                   "stderr": [],
                   "retry": 0,
-                  "startTime": "2026-10-20T17:22:51.523Z",
+                  "startTime": "2026-10-21T17:11:07.832Z",
                   "annotations": [],
                   "attachments": []
                 }
@@ -344,7 +321,7 @@
           ],
           "id": "de3f15501f825e0a6f88-9641e5c95da40b643eaa",
           "file": "orders.spec.ts",
-          "line": 294,
+          "line": 266,
           "column": 5
         },
         {
@@ -363,12 +340,12 @@
                   "workerIndex": 0,
                   "parallelIndex": 0,
                   "status": "passed",
-                  "duration": 1348,
+                  "duration": 1300,
                   "errors": [],
                   "stdout": [],
                   "stderr": [],
                   "retry": 0,
-                  "startTime": "2026-10-20T17:22:54.692Z",
+                  "startTime": "2026-10-21T17:11:10.619Z",
                   "annotations": [],
                   "attachments": []
                 }
@@ -378,7 +355,7 @@
           ],
           "id": "de3f15501f825e0a6f88-37f8bf0457e2fbe9fb66",
           "file": "orders.spec.ts",
-          "line": 314,
+          "line": 286,
           "column": 5
         },
         {
@@ -397,12 +374,12 @@
                   "workerIndex": 0,
                   "parallelIndex": 0,
                   "status": "passed",
-                  "duration": 11476,
+                  "duration": 11413,
                   "errors": [],
                   "stdout": [],
                   "stderr": [],
                   "retry": 0,
-                  "startTime": "2026-10-20T17:22:56.066Z",
+                  "startTime": "2026-10-21T17:11:11.946Z",
                   "annotations": [],
                   "attachments": []
                 }
@@ -412,7 +389,7 @@
           ],
           "id": "de3f15501f825e0a6f88-a4dcee58dab89797e1ca",
           "file": "orders.spec.ts",
-          "line": 338,
+          "line": 310,
           "column": 5
         },
         {
@@ -431,12 +408,12 @@
                   "workerIndex": 0,
                   "parallelIndex": 0,
                   "status": "passed",
-                  "duration": 3574,
+                  "duration": 2777,
                   "errors": [],
                   "stdout": [],
                   "stderr": [],
                   "retry": 0,
-                  "startTime": "2026-10-20T17:23:07.574Z",
+                  "startTime": "2026-10-21T17:11:23.384Z",
                   "annotations": [],
                   "attachments": []
                 }
@@ -446,7 +423,7 @@
           ],
           "id": "de3f15501f825e0a6f88-348d33663a39790391f1",
           "file": "orders.spec.ts",
-          "line": 366,
+          "line": 338,
           "column": 5
         }
       ]
@@ -454,9 +431,9 @@
   ],
   "errors": [],
   "stats": {
-    "startTime": "2026-10-20T17:22:28.253Z",
-    "duration": 43871.700999999994,
-    "expected": 10,
+    "startTime": "2026-10-21T17:10:48.017Z",
+    "duration": 39128.995,
+    "expected": 9,
     "skipped": 0,
     "unexpected": 0,
     "flaky": 0

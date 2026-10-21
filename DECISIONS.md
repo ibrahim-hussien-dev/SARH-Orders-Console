@@ -1,51 +1,45 @@
 # Implementation decisions
 
-These are three decisions embodied in the integrated implementation, each
-written in seven lines as requested by the brief. The alternatives below are
-technical comparisons, not evidence that the candidate personally considered
-them. **Candidate confirmation required:** review and defend each tradeoff;
-if an alternative was not one you seriously considered, replace it with your
-actual alternative and reasoning before submission.
-
 ## 1. Persist idempotency with the order
 
-One immediate SQLite transaction stores the order, items and `(user_id, key)`.
-The normalized body hash makes exact retries replay and changed-body reuse return 422.
-A unique database key backs the guarantee; a disabled button alone cannot cover network retries.
-Alternative: an in-memory key map is simpler, but loses the guarantee after restart, so persistent keys fit this requirement.
-The browser retains the same body/key for ambiguous failures, reload and same-user reauthentication.
-The live proof establishes one-process HTTP behavior, not a multi-process concurrency benchmark.
-Different keys, edits after uncertain failure, explicit logout or order deletion can permit another order; keys never expire.
+I use a UUID idempotency key scoped to the authenticated user to identify one create attempt.
+One immediate SQLite transaction stores the order, its items and the unique user/key record.
+A hash of the normalized body lets retries return the same order; changed-body reuse returns 422.
+An in-memory key map would be simpler, but it loses the record after restart, so I use database persistence.
+The client keeps the original body/key after an uncertain failure and retries that same attempt.
+The parallel-request proof verifies one order through a single running Node process, not a distributed system.
+Different keys can create similar orders; deleting an order removes its key, and keys otherwise do not expire.
 
-## 2. Use keyset pages and invalidate obsolete requests
+## 2. Use keyset pagination and reject obsolete responses
 
-List queries fetch at most 101 rows, ordered by date or total plus the id tiebreaker.
-Composite status/sort indexes support both directions; item counts use the item-order index.
-Alternative: offset pagination simplifies numbered pages, but deep pages scan skipped rows and shift during inserts.
-Keyset pages fit Load more; fetching the entire table would put 50,000 orders in browser memory and violate the brief.
-AbortController plus a request generation rejects stale success, error and loading updates, including Load more.
-Invalidation begins before paint; a 300 ms search debounce remains active through filter changes.
-Contains search still scans; token FTS would change semantics, and repeated Load more can still grow the DOM.
+I use bounded pages ordered by creation date or total, with ID as the unique tiebreaker.
+The query reads one extra row to detect another page; composite indexes support status and sorting.
+Offset pagination is easier for numbered pages, but deep offsets scan skipped rows and shift during inserts.
+Keyset pagination fits the Load more interface and avoids sending 50,000 orders to the browser.
+AbortController saves unnecessary work, while a generation check prevents stale success, error or loading updates.
+Search waits 300 ms; old requests become invalid immediately, including during debounce and Load more.
+Contains search can still scan, loaded rows accumulate in the DOM, and pages are not a live database snapshot.
 
-## 3. Keep a short-lived session in an HttpOnly cookie
+## 3. Keep authentication in a short-lived HttpOnly cookie
 
-Login verifies bcrypt hashes and issues a signed HS256 JWT with a 15-minute expiry.
-The API accepts only its HttpOnly, SameSite=Strict cookie and enforces admin deletion itself.
-Alternative: localStorage bearer tokens simplify explicit API headers, but injected JavaScript could directly steal them.
-The cookie approach limits direct token theft while retaining the delivered JWT design and a small local implementation.
-SameSite mitigates most CSRF; it does not stop XSS acting within the session or every same-site threat.
-Role changes, deletion of users and stolen tokens may remain effective until expiry; logout clears the browser cookie only.
-No refresh, revocation, CSRF token or distributed rate limiter was added; these limits are explicit in README.
+I use bcrypt password hashes and a verified HS256 JWT with a 15-minute expiry.
+The browser receives the token only as an HttpOnly, SameSite=Strict cookie; the API enforces admin deletion.
+A localStorage bearer token makes explicit request headers convenient, but injected JavaScript can steal it directly.
+The cookie reduces that exposure, although XSS can still make requests as the signed-in user.
+SameSite limits cross-site requests; there is no separate CSRF token, refresh flow or token revocation.
+Roles are cached until expiry, so demotion or user deletion does not immediately invalidate every order request.
+I keep account access seeded and remove public registration because this console exposes customer information.
 
 ## AI-use disclosure
 
-The candidate supplied multiple earlier AI deliveries. Codex integrated their
-code, reviewed the actual files, fixed request lifecycle issues, installed and
-updated dependencies, added integration/browser tests, and produced documentation
-and execution evidence. Codex subsequently added Agent sign-up at the user's
-request and tested it against isolated databases. Original deliveries said NOT RUN; only locally observed
-results are reported as verified.
+I used Claude and Codex for this assessment. Claude assisted with the initial
+implementation deliveries, review and checking the project against the brief.
+Codex integrated the deliveries, repaired issues, ran the automated checks,
+and helped write the documentation and code-learning guide. A public sign-up
+feature was added during development and then removed after the security review.
+The decisions above describe the final design and its tradeoffs; AI assistance
+contributed to both the implementation and this explanation. I do not claim
+that I independently authored every line or manually performed the automated tests.
 
-**Candidate confirmation required:** add the actual tool/model names and your
-own contributions only if you can substantiate them. Do not claim you personally
-performed Codex's checks or that this document proves your understanding.
+My personal active time coordinating the AI-assisted work was under two hours,
+as reported on 21 October 2026. This is not a measurement of total agent runtime.

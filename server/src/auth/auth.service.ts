@@ -15,21 +15,12 @@ export interface LoginResult {
 }
 
 export interface AuthService {
-  signup(email: string, password: string): Promise<LoginResult>;
   login(email: string, password: string): Promise<LoginResult>;
   getCurrentUser(id: number): PublicUser;
 }
 
 export function createAuthService(repository: AuthRepository, jwtSecret: string): AuthService {
   return {
-    async signup(email, password) {
-      const passwordHash = await bcrypt.hash(password, BCRYPT_COST);
-      const user = repository.createAgent(email, passwordHash);
-      if (!user) {
-        throw new HttpError(409, 'EMAIL_IN_USE', 'An account with this email already exists. Sign in instead.');
-      }
-      return { user, token: signToken(user, jwtSecret) };
-    },
     async login(email, password) {
       const user = repository.findByEmail(email);
       const passwordMatches = await bcrypt.compare(

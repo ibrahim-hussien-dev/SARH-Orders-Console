@@ -1,3 +1,4 @@
+Started: 2026-10-21T20:00:04.6173778+03:00
 
 > sarh-orders-console@1.0.0 test
 > npm run test --workspace server && npm run test --workspace client
@@ -11,9 +12,9 @@
 
 
  Test Files  4 passed (4)
-      Tests  136 passed (136)
-   Start at  20:18:31
-   Duration  4.23s (transform 1.35s, setup 0ms, import 6.23s, tests 6.28s, environment 1ms)
+      Tests  130 passed (130)
+   Start at  20:00:10
+   Duration  6.36s (transform 2.23s, setup 0ms, import 14.04s, tests 5.56s, environment 1ms)
 
 
 > @sarh/client@1.0.0 test
@@ -25,6 +26,7 @@
 
  Test Files  2 passed (2)
       Tests  6 passed (6)
-   Start at  20:18:37
-   Duration  2.96s (transform 206ms, setup 0ms, import 909ms, tests 85ms, environment 3.18s)
+   Start at  20:00:19
+   Duration  13.13s (transform 291ms, setup 0ms, import 3.32s, tests 74ms, environment 18.84s)
 
+EXIT_CODE=0

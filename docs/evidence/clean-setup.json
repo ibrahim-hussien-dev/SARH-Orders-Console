@@ -1,0 +1,15 @@
+{
+  "time": "2026-10-21T20:02:38.7265368+03:00",
+  "node": "v24.14.0",
+  "scope": "local git clone with reviewed uncommitted source overlay; npm ci/setup/seed; existing machine cache",
+  "npm": "11.9.0",
+  "seconds": 54.9902158,
+  "startupSeconds": 3.394,
+  "combinedCommandSeconds": 58.385215800000005,
+  "frontendHTTP": 200,
+  "apiHTTP": 200,
+  "proxyLoginHTTP": 200,
+  "authenticatedRows": 5,
+  "ports": "4101/5176 to avoid existing development servers",
+  "limits": "Local git clone plus reviewed source overlay; existing Windows machine and dependency cache; excludes human pauses and Node installation. Not a fresh operating system or remote final-revision clone."
+}

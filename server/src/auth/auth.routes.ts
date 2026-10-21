@@ -7,34 +7,13 @@ import { unauthenticatedError } from './auth.errors';
 import { createAuthMiddleware } from './auth.middleware';
 import { createLoginRateLimiter } from './auth.rate-limit';
 import { createAuthRepository } from './auth.repository';
-import { loginSchema, signupSchema } from './auth.schemas';
-import { rateLimit } from 'express-rate-limit';
-import { HttpError } from '../http/errors';
+import { loginSchema } from './auth.schemas';
 import { createAuthService } from './auth.service';
 
 export function createAuthRouter(db: Database, config: AppConfig): Router {
   const router = Router();
   const auth = createAuthMiddleware(config);
   const service = createAuthService(createAuthRepository(db), config.jwtSecret);
-
-  router.post('/signup', rateLimit({
-    windowMs: 15 * 60 * 1000,
-    limit: 10,
-    standardHeaders: true,
-    legacyHeaders: false,
-    skip: () => config.nodeEnv === 'test',
-    handler: (_req, _res, next) => next(new HttpError(429, 'RATE_LIMITED', 'Too many sign-up attempts. Try again later.')),
-  }), async (req, res, next) => {
-    try {
-      const parsed = signupSchema.safeParse(req.body);
-      if (!parsed.success) throw fromZod(parsed.error);
-      const { user, token } = await service.signup(parsed.data.email, parsed.data.password);
-      res.cookie(SESSION_COOKIE_NAME, token, sessionCookieOptions(config));
-      res.status(201).json({ user });
-    } catch (error) {
-      next(error);
-    }
-  });
 
   router.post('/login', createLoginRateLimiter(config), async (req, res, next) => {
     try {

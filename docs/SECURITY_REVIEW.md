@@ -1,27 +1,8 @@
 # Security Review: Orders Console Authentication
 
-## Sign-up addition (20 October 2026)
-
-User-requested public registration creates Agent accounts only. The server
-rejects extra fields such as role, validates normalized email, requires at least
-8 password characters and at most 72 UTF-8 bytes, hashes with bcrypt cost 10,
-and enforces email uniqueness in SQLite. Ten registration attempts per IP per
-15 minutes include successful requests. Sessions use the existing cookie/JWT
-policy. No email verification or invitation flow is implemented; public users
-can obtain Agent access. A 409 duplicate-email response permits account
-enumeration. These are explicit local-assessment limitations.
-References below to no password policy describe the original login-only scope;
-new registration now enforces the stated length/byte policy.
-
 ## Scope and method
 
-This review originated in `OUTPUTS/imp3.txt`. During integration, Codex read all
-five pages of the original assessment PDF from the candidate-provided Downloads
-path, rendered page 2 and compared its vulnerable snippet to the replacement in
-`server/src/auth/*` and `server/src/orders/delete/*`. Evidence labels distinguish
-what the snippet actually shows from assumptions about its unshown data layer.
-
-Each finding is labelled by how well it is supported:
+I reviewed section 3 of the assessment against the implemented auth and delete routes. Public registration is removed. The findings distinguish facts visible in the snippet from assumptions about its unseen data layer:
 
 - **Proven**: follows directly from the legacy code as written, regardless of backend.
 - **Backend-dependent**: the snippet does not show enough (for example, which ORM) to prove it. It is stated as a risk, not a fact.
@@ -29,10 +10,7 @@ Each finding is labelled by how well it is supported:
 
 Severity is judged for an internet-reachable operations tool holding customer data.
 
-**Verification status:** Codex ran `npm test`: 129 server tests (including 42 auth
-tests) and 6 client race/transport tests passed on Node 24.14.0 / Vitest 4.1.12.
-The integrated cookie flow, agent denial and admin deletion were also exercised
-in the browser against an isolated file-backed database.
+**Verification:** 130 server tests (including 42 auth tests), 6 client tests and nine Chrome scenarios passed. Exact logs and exits are in docs/evidence.
 
 ## Summary
 
@@ -57,7 +35,7 @@ in the browser against an isolated file-backed database.
 
 - **Finding:** `const SECRET = 'sarh-secret-2026'` is committed in source.
 - **Plausible exploit:** anyone who can read the repository, a backup, or a build artifact can run `jwt.sign({sub:1, role:'admin'}, 'sarh-secret-2026')`. Once verification exists (F2), that token is accepted. In the legacy code the secret is only used by `sign`, so the damage today comes from F2, but the secret becomes the single point of failure as soon as verification is fixed.
-- **Fix implemented:** `server/src/config.ts` (owner C) requires `JWT_SECRET` of at least 32 characters and throws when it is missing. `.env.example` leaves it empty and `npm run setup` writes a random value. `.env` is git-ignored (owner B). The secret reaches auth code only through `AppConfig.jwtSecret`.
+- **Fix implemented:** `server/src/config.ts` requires `JWT_SECRET` of at least 32 characters and throws when it is missing. `.env.example` leaves it empty and `npm run setup` writes a random value. `.env` is git-ignored. The secret reaches auth code only through `AppConfig.jwtSecret`.
 - **Remaining limit:** the secret sits in a plain `.env` file on disk. There is no rotation mechanism. Rotating it logs everybody out, which is acceptable with 15-minute tokens.
 
 ### F2. `jwt.decode` instead of `jwt.verify` (Critical, proven)
@@ -92,7 +70,7 @@ in the browser against an isolated file-backed database.
 
 - **Finding:** the PDF contains `findFirst({ where: { email, password } })`, which appears to compare the submitted password directly. Without the original data layer, hidden middleware or transforms cannot be excluded, so plaintext storage is a concern rather than an independently proven fact.
 - **Plausible exploit:** one database leak, backup or SQL read exposes every user's real password, which people reuse elsewhere.
-- **Fix implemented:** passwords are stored as bcryptjs hashes (cost 10, seeded by owner C). `auth.repository.ts` finds the user by email with the parameterised `SELECT ... WHERE email = ?` and `auth.service.ts` runs `bcrypt.compare`. When the email is unknown, the compare still runs against a dummy hash created once at process start with the same cost, so the response time is closer for known and unknown emails. Wrong email and wrong password return byte-identical 401 bodies (tested).
+- **Fix implemented:** passwords are stored as bcryptjs hashes (cost 10, seeded locally). `auth.repository.ts` finds the user by email with the parameterised `SELECT ... WHERE email = ?` and `auth.service.ts` runs `bcrypt.compare`. When the email is unknown, the compare still runs against a dummy hash created once at process start with the same cost, so the response time is closer for known and unknown emails. Wrong email and wrong password return byte-identical 401 bodies (tested).
 - **Remaining limit:** the dummy compare reduces the timing difference but is **not** a claim of exact constant-time behaviour. bcrypt uses only the first 72 bytes of a password. There is no password policy, change or reset flow. Emails are compared after lower-casing and the seed stores them lower-case.
 
 ### F7. Authorization only in React (Critical, proven)
@@ -125,7 +103,7 @@ in the browser against an isolated file-backed database.
 
 - **Finding:** `async (req, res) => { await db... }` in Express 4. Express 4 does not catch rejected promises from handlers.
 - **Plausible exploit:** if the awaited call rejects (for example, deleting a missing record or a bad id), the request never gets an answer. On Node 20 an unhandled rejection terminates the process by default, so one request can take the service down. That a given ORM throws on a missing record is backend-dependent. The Express 4 behaviour is not.
-- **Fix implemented:** every async handler wraps its body in `try/catch` and calls `next(error)`. Errors end in B's `errorHandler`, which returns `{error:{code,message}}` and never a stack or SQL text. Missing orders are an explicit 404.
+- **Fix implemented:** every async handler wraps its body in `try/catch` and calls `next(error)`. Errors end in the common `errorHandler`, which returns `{error:{code,message}}` and never a stack or SQL text. Missing orders are an explicit 404.
 - **Remaining limit:** a process-level `unhandledRejection` handler is not part of this scope.
 
 ### F11. Whole token payload trusted as `req.user` (High in legacy, proven)
